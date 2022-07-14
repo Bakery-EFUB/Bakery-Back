@@ -32,10 +32,10 @@ public class Order {
 
     @ManyToOne()
     @JoinColumn(name = "member_id")
-    private Member orderedBy;
+    private Member member;
 
     @Builder
-    public Order(String locationGu, String locationDong, String type, String size, String flavor, String description, String image, LocalDateTime pickupDate, Integer priceMin, Integer priceMax, String hashtag, Member orderedBy){
+    public Order(String locationGu, String locationDong, String type, String size, String flavor, String description, String image, LocalDateTime pickupDate, Integer priceMin, Integer priceMax, String hashtag, Member member){
         this.locationGu = locationGu;
         this.locationDong = locationDong;
         this.type = type;
@@ -46,10 +46,18 @@ public class Order {
         this.pickupDate = pickupDate;
         this.priceMin = priceMin;
         this.priceMax = priceMax;
-        this.orderedBy = orderedBy;
+        this.member = member;
         this.hashtag = hashtag;
         this.createdAt = LocalDateTime.now();
         this.finishedFlag = false;
+    }
+
+    public void updatePickup(LocalDateTime pickupDate){
+        this.pickupDate = pickupDate;
+    }
+
+    public void updateFinishedFlag(){
+        this.finishedFlag = true;
     }
 }
 
