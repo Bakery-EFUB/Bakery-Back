@@ -11,4 +11,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findAllByFinishedFlag(Boolean finishedFlag);
     List<Order> findAllByLocationGuAndLocationDongAndFinishedFlag(String locationGu, String locationDong, Boolean finishedFlag);
     List<Order> findAllByFinishedFlagOrderByCreatedAtDesc(Boolean finishedFlag);
+    List<Order> findAllByMember(Member member);
 }
