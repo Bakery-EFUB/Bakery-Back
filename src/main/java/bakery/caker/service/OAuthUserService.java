@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
 import java.util.Collections;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
@@ -47,5 +48,13 @@ public class OAuthUserService implements OAuth2UserService<OAuth2UserRequest, OA
             memberRepository.save(attributes.toEntity());
             return memberRepository.findMemberByKakaoId(attributes.getKakaoId());
         }
+    }
+
+    public Object loadUserPostman(Map<String,Object> attribute) {
+        OAuthAttributesDTO attributes = OAuthAttributesDTO.ofKakao(attribute);
+        Member member = saveOrUpdate(attributes);
+
+        httpSession.setAttribute("user",new SessionUserDTO(member));
+        return httpSession.getAttribute("user");
     }
 }
