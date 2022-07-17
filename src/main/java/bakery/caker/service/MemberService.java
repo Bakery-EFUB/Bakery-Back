@@ -27,12 +27,6 @@ import java.util.Date;
 public class MemberService {
     private final MemberRepository memberRepository;
 
-    @Value("${cloud.aws.credentials.accessKey}")
-    private String accessKey;
-
-    @Value("${cloud.aws.credentials.secretKey}")
-    private String secretKey;
-
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
@@ -70,7 +64,7 @@ public class MemberService {
     public void modifyMemberImage(Long memberId, MultipartFile file) throws IOException {
         Member member = findMemberEntity(memberId);
 
-        S3Presigner presigner = createPresigner();
+        S3Presigner presigner = ImageUploadService.createPresigner();
         String fileName = makeFileName(file);
 
         URL url = ImageUploadService.getS3UploadURL(presigner, this.bucket, fileName);
@@ -86,7 +80,7 @@ public class MemberService {
         Member member = findMemberEntity(memberId);
         String fileName = member.getImage();
 
-        S3Presigner presigner = createPresigner();
+        S3Presigner presigner = ImageUploadService.createPresigner();
 
         String url = ImageUploadService.getS3DownloadURL(presigner, this.bucket, fileName);
         presigner.close();
@@ -107,17 +101,6 @@ public class MemberService {
     public Member findMemberEntity(Long memberId) {
         return memberRepository.findMemberByMemberIdAndDeleteFlagIsFalse(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("유저가 존재하지 않습니다 id= "+memberId));
-    }
-
-    public AwsBasicCredentials createCredentials() {
-        return AwsBasicCredentials.create(this.accessKey,this.secretKey);
-    }
-
-    public S3Presigner createPresigner() {
-        return S3Presigner.builder()
-                .region(Region.AP_NORTHEAST_2)
-                .credentialsProvider(StaticCredentialsProvider.create(createCredentials()))
-                .build();
     }
 
     public static String makeFileName(MultipartFile file) {
