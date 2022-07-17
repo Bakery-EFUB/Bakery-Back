@@ -24,10 +24,6 @@ public class StoreController {
         return new ResponseEntity<>(storeService.getStoreList(), HttpStatus.OK);
     }
 
-    @PostMapping("/stores")
-    ResponseEntity<?> write(@RequestBody StoreResponseDTO storeResponseDTO) {
-        return new ResponseEntity<>(storeService.saveStore(storeResponseDTO), HttpStatus.OK);
-    }
 
     @GetMapping("/stores/recomends")
     ResponseEntity<?> getStoreRecomendList() {
@@ -49,5 +45,10 @@ public class StoreController {
     ResponseEntity<?> getMyStoreDetail(@LoginUser SessionUserDTO sessionUser) {
         storeService.getStoreDetailByOwner(sessionUser.getMemberId());
         return new ResponseEntity<>("successfully deleted", HttpStatus.OK);
+    }
+
+    @PostMapping("/stores/myStore")
+    ResponseEntity<?> writeMyStore(@RequestBody StoreResponseDTO storeResponseDTO) {
+        return new ResponseEntity<>(storeService.saveStore(storeResponseDTO), HttpStatus.OK);
     }
 }

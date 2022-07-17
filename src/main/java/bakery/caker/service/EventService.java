@@ -50,4 +50,14 @@ public class EventService {
     public Long saveEvent(EventResponseDTO eventResponseDTO)  {
         return eventRepository.save(eventResponseDTO.toEntity()).getId();
     }
+
+    @Transactional
+    public void deleteEvent(Long store_id, Long event_id, Long owner_id) {
+        //세션 유저가 가게 주인일때만 삭제 가능
+        Optional<Store> store = storeRepository.findById(store_id);
+        if( owner_id == store.get().getOwner()){
+            eventRepository.deleteById(event_id);
+        }
+        else return;
+    }
 }

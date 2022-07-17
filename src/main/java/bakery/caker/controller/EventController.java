@@ -1,6 +1,8 @@
 package bakery.caker.controller;
 
+import bakery.caker.config.LoginUser;
 import bakery.caker.dto.EventResponseDTO;
+import bakery.caker.dto.SessionUserDTO;
 import bakery.caker.service.EventService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -19,9 +21,16 @@ public class EventController {
         return new ResponseEntity<>("successfully deleted", HttpStatus.OK);
     }
 
-    @PostMapping("/Events")
-    ResponseEntity<?> write(@RequestBody EventResponseDTO EventResponseDTO) {
-        return new ResponseEntity<>(EventService.saveEvent(EventResponseDTO), HttpStatus.OK);
+    @PostMapping("/events")
+    ResponseEntity<?> write(@RequestBody EventResponseDTO eventResponseDTO) {
+        return new ResponseEntity<>(eventService.saveEvent(eventResponseDTO), HttpStatus.OK);
     }
 
+    @DeleteMapping("/store/{store_id}/events/{events_id}")
+    ResponseEntity<?> delete(@PathVariable("store_id") Long store_id,
+                             @PathVariable("events_id") Long events_id,
+                             @LoginUser SessionUserDTO sessionUser) {
+        eventService.deleteEvent(store_id,store_id,sessionUser.getMemberId());
+        return new ResponseEntity<>("successfully deleted", HttpStatus.OK);
+    }
 }

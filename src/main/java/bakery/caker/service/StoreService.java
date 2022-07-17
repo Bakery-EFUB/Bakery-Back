@@ -22,14 +22,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class StoreService {
 
     // AWS credentials
-    @Value("${cloud.aws.credentials.accessKey}")
-    private String accessKey;
-
-    @Value("${cloud.aws.credentials.secretKey}")
-    private String secretKey;
-
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
+//    @Value("${cloud.aws.credentials.accessKey}")
+//    private String accessKey;
+//
+//    @Value("${cloud.aws.credentials.secretKey}")
+//    private String secretKey;
+//
+//    @Value("${cloud.aws.s3.bucket}")
+//    private String bucket;
     
     private final StoreRepository storeRepository;
     private final MemberRepository memberRepository;
@@ -83,7 +83,7 @@ public class StoreService {
                 StoreResponseDTO storeResponseDTO = StoreResponseDTO.builder()
                         .ownerName(user.get().getNickname())
                         .mainImg(store.getMainImg())
-                        .name(store.get().getName())
+                        .name(store.getName())
                         .readme(store.getReadme())
                         .address(store.getAddress())
                         .kakaoUrl(store.getKakaoUrl())
