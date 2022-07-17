@@ -18,7 +18,6 @@ public class StoreResponseDTO {
     private String address;
     private String kakaoUrl;
     private String instagram;
-    private String menuImg;
     private Boolean certifyFlag;
     private String openTime;
     private String phoneNumber;
@@ -26,7 +25,7 @@ public class StoreResponseDTO {
 
     @Builder
     public StoreResponseDTO(String ownerName, String name, String mainImg, String readme, String address, String kakaoUrl,
-            String instagram, Boolean certifyFlag, String openTime,String menuImg,  String phoneNumber, LocalDateTime createdDate) {
+            String instagram, Boolean certifyFlag, String openTime,  String phoneNumber, LocalDateTime createdDate) {
         this.ownerName = ownerName;
         this.name = name;
         this.mainImg = mainImg;
@@ -34,7 +33,6 @@ public class StoreResponseDTO {
         this.address = address;
         this.kakaoUrl = kakaoUrl;
         this.instagram = instagram;
-        this.menuImg = menuImg;
         this.certifyFlag = certifyFlag;
         this.openTime = openTime;
         this.phoneNumber = phoneNumber;
@@ -51,7 +49,6 @@ public class StoreResponseDTO {
             .address(address)
             .kakaoUrl(kakaoUrl)
             .instagram(instagram)
-            .menuImg(menuImg)
             .certifyFlag(certifyFlag)
             .openTime(openTime)
             .phoneNumber(phoneNumber)

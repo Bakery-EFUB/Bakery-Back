@@ -42,9 +42,6 @@ public class Store {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String instagram;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
-    private String menuImg;
-
     @Column
     private Boolean certifyFlag;
 
@@ -60,7 +57,7 @@ public class Store {
 
 
     @Builder
-    public Store(Long id, Long owner, String name, String mainImg, String readme, String address, String kakaoUrl, String instagram, String menuImg, Boolean certifyFlag,String openTime, String phoneNumber, LocalDateTime createdDate) {
+    public Store(Long id, Long owner, String name, String mainImg, String readme, String address, String kakaoUrl, String instagram, Boolean certifyFlag,String openTime, String phoneNumber, LocalDateTime createdDate) {
         this.id = id;
         this.owner = owner;
         this.name = name;
@@ -69,7 +66,6 @@ public class Store {
         this.address = address;
         this.kakaoUrl =kakaoUrl;
         this.instagram = instagram;
-        this.menuImg= menuImg;
         this.certifyFlag = certifyFlag;
         this.openTime = openTime;
         this.phoneNumber = phoneNumber;
