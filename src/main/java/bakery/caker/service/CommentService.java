@@ -47,7 +47,7 @@ public class CommentService {
 
     //recomment 작성
     @Transactional
-    public void createReomment(Long memberId, Long commentId, CommentDTO recomment){
+    public void createRecomment(Long memberId, Long commentId, CommentDTO recomment){
         memberRepository.findById(memberId).ifPresent(
                 member -> commentRepository.findById(commentId).ifPresent(
                         comment -> recommentRepository.save(recomment.toRecommentEntity(member, comment))
