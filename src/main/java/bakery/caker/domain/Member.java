@@ -1,6 +1,8 @@
 package bakery.caker.domain;
 
 import bakery.caker.config.Authority;
+import bakery.caker.dto.MemberRequestDTO;
+import bakery.caker.dto.MemberResponseDTO;
 import com.sun.istack.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -53,5 +55,17 @@ public class Member {
 
     public void updateAuthority(Authority authority) {
         this.authority = authority;
+    }
+
+    public void updateProfile(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void updateImage(String fileurl) {
+        this.image = fileurl;
+    }
+
+    public void updateDeleteFlag() {
+        this.deleteFlag = true;
     }
 }
