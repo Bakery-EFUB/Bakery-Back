@@ -1,7 +1,10 @@
 package bakery.caker.dto;
+import bakery.caker.domain.Member;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
+
 import bakery.caker.domain.Store;
 import lombok.NoArgsConstructor;
 
@@ -24,22 +27,20 @@ public class StoreResponseDTO {
     private LocalDateTime createdDate;
 
     @Builder
-    public StoreResponseDTO(String ownerName, String name, String mainImg, String readme, String address, String kakaoUrl,
-            String instagram, Boolean certifyFlag, String openTime,  String phoneNumber, LocalDateTime createdDate) {
+    public StoreResponseDTO(Store entity,String ownerName, String imgUrl) {
         this.ownerName = ownerName;
-        this.name = name;
-        this.mainImg = mainImg;
-        this.readme = readme;
-        this.address = address;
-        this.kakaoUrl = kakaoUrl;
-        this.instagram = instagram;
-        this.certifyFlag = certifyFlag;
-        this.openTime = openTime;
-        this.phoneNumber = phoneNumber;
-        this.createdDate = createdDate;
+        this.name = entity.getName();
+        this.mainImg = imgUrl;
+        this.readme = entity.getReadme();
+        this.address = entity.getAddress();
+        this.kakaoUrl = entity.getKakaoUrl();
+        this.instagram = entity.getInstagram();
+        this.certifyFlag = entity.getCertifyFlag();
+        this.openTime = entity.getOpenTime();
+        this.phoneNumber = entity.getPhoneNumber();
+        this.createdDate = entity.getCreatedDate();
     }
 
-    
     public Store toEntity() {
         Store build = Store.builder()
             .owner(owner)
@@ -56,5 +57,9 @@ public class StoreResponseDTO {
             .build();
 
         return build;
+    }
+
+    public void updateMainImg(String fileName){
+        this.mainImg = fileName;
     }
 }

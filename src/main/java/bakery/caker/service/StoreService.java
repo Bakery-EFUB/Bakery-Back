@@ -1,41 +1,58 @@
 package bakery.caker.service;
 
 import lombok.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.io.IOException;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import bakery.caker.domain.Member;
 import bakery.caker.domain.Store;
 import bakery.caker.dto.StoreResponseDTO;
 import bakery.caker.repository.MemberRepository;
 import bakery.caker.repository.StoreRepository;
+import bakery.caker.service.ImageUploadService;
+
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
 @Service
 @RequiredArgsConstructor
 public class StoreService {
 
     // AWS credentials
-//    @Value("${cloud.aws.credentials.accessKey}")
-//    private String accessKey;
-//
-//    @Value("${cloud.aws.credentials.secretKey}")
-//    private String secretKey;
-//
-//    @Value("${cloud.aws.s3.bucket}")
-//    private String bucket;
+    @Value("${cloud.aws.credentials.accessKey}")
+    private String accessKey;
+
+    @Value("${cloud.aws.credentials.secretKey}")
+    private String secretKey;
+
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
     
     private final StoreRepository storeRepository;
     private final MemberRepository memberRepository;
 
     @Transactional
-    public Long saveStore(StoreResponseDTO storeResponseDTO) {
+    public Long saveStore(StoreResponseDTO storeResponseDTO, MultipartFile imgFile) throws IOException {
+        S3Presigner presigner = createPresigner();
+        String fileName = makeFileName(imgFile);
+
+        URL url = ImageUploadService.getS3UploadURL(presigner, this.bucket, fileName);
+        ImageUploadService.UploadImage(url, imgFile);
+        presigner.close();
+        storeResponseDTO.updateMainImg(fileName);
+
         return storeRepository.save(storeResponseDTO.toEntity()).getId();
     }
 
@@ -49,20 +66,9 @@ public class StoreService {
             Long memberId = store.getOwner();
             Optional<Member> user = memberRepository.findMemberByMemberIdAndDeleteFlagIsFalse(memberId);
             if (user.isPresent()) {
-                StoreResponseDTO storeResponseDTO = StoreResponseDTO.builder()
-                        .ownerName(user.get().getNickname())
-                        .mainImg(store.getMainImg())
-                        .name(store.getName())
-                        .readme(store.getReadme())
-                        .address(store.getAddress())
-                        .kakaoUrl(store.getKakaoUrl())
-                        .instagram(store.getInstagram())
-                        .menuImg(store.getMenuImg())
-                        .certifyFlag(store.getCertifyFlag())
-                        .openTime(store.getOpenTime())
-                        .phoneNumber(store.getPhoneNumber())
-                        .createdDate(store.getCreatedDate())
-                        .build();
+                String ownerName = user.get().getNickname();
+                String imgUrl = findStoreMainImage(store.getId());
+                StoreResponseDTO storeResponseDTO = new StoreResponseDTO(store, ownerName, imgUrl);
                 storeResponseDTOList.add(storeResponseDTO);
             }
         }
@@ -80,20 +86,9 @@ public class StoreService {
             Long memberId = store.getOwner();
             Optional<Member> user = memberRepository.findMemberByMemberIdAndDeleteFlagIsFalse(memberId);
             if (user.isPresent()) {
-                StoreResponseDTO storeResponseDTO = StoreResponseDTO.builder()
-                        .ownerName(user.get().getNickname())
-                        .mainImg(store.getMainImg())
-                        .name(store.getName())
-                        .readme(store.getReadme())
-                        .address(store.getAddress())
-                        .kakaoUrl(store.getKakaoUrl())
-                        .instagram(store.getInstagram())
-                        .menuImg(store.getMenuImg())
-                        .certifyFlag(store.getCertifyFlag())
-                        .openTime(store.getOpenTime())
-                        .phoneNumber(store.getPhoneNumber())
-                        .createdDate(store.getCreatedDate())
-                        .build();
+                String ownerName = user.get().getNickname();
+                String imgUrl = findStoreMainImage(store.getId());
+                StoreResponseDTO storeResponseDTO = new StoreResponseDTO(store, ownerName, imgUrl);
                 storeResponseDTOList.add(storeResponseDTO);
             }
         }
@@ -111,44 +106,54 @@ public class StoreService {
 
     @Transactional
     public StoreResponseDTO getStoreDetail(Long id) {
-        Optional<Store> store = storeRepository.findById(id);
-        Long memberId = store.get().getOwner();
+        Store store = storeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 스토어가 존재하지 않습니다 id= "+id ));;
+        Long memberId = store.getOwner();
         Optional<Member> user = memberRepository.findMemberByMemberIdAndDeleteFlagIsFalse(memberId);
-        StoreResponseDTO storeResponseDTO = StoreResponseDTO.builder()
-                .ownerName(user.get().getNickname())
-                .name(store.get().getName())
-                .mainImg(store.get().getMainImg())
-                .readme(store.get().getReadme())
-                .address(store.get().getAddress())
-                .kakaoUrl(store.get().getKakaoUrl())
-                .instagram(store.get().getInstagram())
-                .menuImg(store.get().getMenuImg())
-                .certifyFlag(store.get().getCertifyFlag())
-                .openTime(store.get().getOpenTime())
-                .phoneNumber(store.get().getPhoneNumber())
-                .createdDate(store.get().getCreatedDate())
-                .build();
-        return storeResponseDTO;
+        String ownerName = user.get().getNickname();
+        String imgUrl = findStoreMainImage(id);
+        return new StoreResponseDTO(store, ownerName, imgUrl);
         }
 
     @Transactional
     public StoreResponseDTO getStoreDetailByOwner(Long memberId) {
-        Optional<Store> store = storeRepository.findStoreByOwner(memberId);
+        Store store = storeRepository.findStoreByOwner(memberId).orElseThrow(() -> new IllegalArgumentException("해당 유저의 스토어가 존재하지 않습니다 id= "+memberId));
         Optional<Member> user = memberRepository.findMemberByMemberIdAndDeleteFlagIsFalse(memberId);
-        StoreResponseDTO storeResponseDTO = StoreResponseDTO.builder()
-                .ownerName(user.get().getNickname())
-                .name(store.get().getName())
-                .mainImg(store.get().getMainImg())
-                .readme(store.get().getReadme())
-                .address(store.get().getAddress())
-                .kakaoUrl(store.get().getKakaoUrl())
-                .instagram(store.get().getInstagram())
-                .menuImg(store.get().getMenuImg())
-                .certifyFlag(store.get().getCertifyFlag())
-                .openTime(store.get().getOpenTime())
-                .phoneNumber(store.get().getPhoneNumber())
-                .createdDate(store.get().getCreatedDate())
+        String ownerName = user.get().getNickname();
+        String imgUrl = findStoreMainImage(store.getId());
+        return new StoreResponseDTO(store, ownerName, imgUrl);
+    }
+
+
+    // AWS connection
+    public AwsBasicCredentials createCredentials() {
+        return AwsBasicCredentials.create(this.accessKey,this.secretKey);
+    }
+
+    public S3Presigner createPresigner() {
+        return S3Presigner.builder()
+                .region(Region.AP_NORTHEAST_2)
+                .credentialsProvider(StaticCredentialsProvider.create(createCredentials()))
                 .build();
-        return storeResponseDTO;
+    }
+
+    @Transactional
+    public String findStoreMainImage(Long storeId) {
+        Optional<Store> store = storeRepository.findById(storeId);
+        String fileName = store.get().getMainImg();
+
+        S3Presigner presigner = createPresigner();
+
+        String url = ImageUploadService.getS3DownloadURL(presigner, this.bucket, fileName);
+        presigner.close();
+        return url;
+    }
+
+    public static String makeFileName(MultipartFile file) {
+        String fileName = file.getOriginalFilename();
+        int extension = fileName.indexOf(".");
+        String contentType = fileName.substring(extension);
+
+        SimpleDateFormat date = new SimpleDateFormat("yyyyMMddHHmmss");
+        return "caker-store-" + date.format(new Date()) + contentType;
     }
 }

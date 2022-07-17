@@ -10,6 +10,7 @@ import java.util.List;
 import org.springframework.ui.Model;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 public class StoreController {
@@ -48,7 +49,7 @@ public class StoreController {
     }
 
     @PostMapping("/stores/myStore")
-    ResponseEntity<?> writeMyStore(@RequestBody StoreResponseDTO storeResponseDTO) {
-        return new ResponseEntity<>(storeService.saveStore(storeResponseDTO), HttpStatus.OK);
+    ResponseEntity<?> writeMyStore(@RequestPart StoreResponseDTO storeResponseDTO, @RequestPart MultipartFile imgFile) {
+        return new ResponseEntity<>(storeService.saveStore(storeResponseDTO, imgFile), HttpStatus.OK);
     }
 }
