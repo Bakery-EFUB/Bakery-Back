@@ -2,7 +2,7 @@ package bakery.caker.dto;
 
 import bakery.caker.domain.Comment;
 import bakery.caker.domain.Member;
-import bakery.caker.domain.Order;
+import bakery.caker.domain.Sheet;
 import bakery.caker.domain.Recomment;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,11 +16,11 @@ public class CommentDTO {
         this.contents = contents;
     }
 
-    public Comment toEntity(Member writer, Order order){
+    public Comment toEntity(Member writer, Sheet sheet){
         return Comment.builder()
                 .contents(contents)
                 .nickname(writer.getNickname())
-                .order(order)
+                .sheet(sheet)
                 .writer(writer)
                 .build();
     }

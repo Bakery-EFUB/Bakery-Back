@@ -24,15 +24,15 @@ public class Comment {
 
     @ManyToOne()
     @JoinColumn(name = "order_id")
-    private Order order;
+    private Sheet sheet;
 
     @Builder
-    public Comment(String contents, String nickname, Member writer, Order order){
+    public Comment(String contents, String nickname, Member writer, Sheet sheet){
         this.contents = contents;
         this.nickname = nickname;
         this.createdAt = LocalDateTime.now();
         this.writer = writer;
-        this.order = order;
+        this.sheet = sheet;
         this.deletedFlag = false;
     }
 

@@ -7,11 +7,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-@Table(name = "order")
-public class Order {
+@Table(name = "sheet")
+public class Sheet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long orderId;
+    private Long sheetId;
 
     private String locationGu;
     private String locationDong;
@@ -35,7 +35,7 @@ public class Order {
     private Member member;
 
     @Builder
-    public Order(String locationGu, String locationDong, String type, String size, String flavor, String description, String image, LocalDateTime pickupDate, Integer priceMin, Integer priceMax, String hashtag, Member member){
+    public Sheet(String locationGu, String locationDong, String type, String size, String flavor, String description, String image, LocalDateTime pickupDate, Integer priceMin, Integer priceMax, String hashtag, Member member){
         this.locationGu = locationGu;
         this.locationDong = locationDong;
         this.type = type;

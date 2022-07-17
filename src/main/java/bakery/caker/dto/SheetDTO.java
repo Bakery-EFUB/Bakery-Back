@@ -1,14 +1,14 @@
 package bakery.caker.dto;
 
 import bakery.caker.domain.Member;
-import bakery.caker.domain.Order;
+import bakery.caker.domain.Sheet;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Getter
-public class OrderDTO {
+public class SheetDTO {
     private String locationGu;
     private String locationDong;
     private String type;
@@ -22,7 +22,7 @@ public class OrderDTO {
     private String hashtag;
 
     @Builder
-    public OrderDTO(String locationGu, String locationDong, String type, String flavor, String size, String description, String image, LocalDateTime pickupDate, Integer priceMin, Integer priceMax, String hashtag){
+    public SheetDTO(String locationGu, String locationDong, String type, String flavor, String size, String description, String image, LocalDateTime pickupDate, Integer priceMin, Integer priceMax, String hashtag){
         this.description = description;
         this.flavor = flavor;
         this.hashtag = hashtag;
@@ -36,8 +36,8 @@ public class OrderDTO {
         this.type = type;
     }
 
-    public Order toEntity(Member member){
-        return Order.builder()
+    public Sheet toEntity(Member member){
+        return Sheet.builder()
                 .description(description)
                 .flavor(flavor)
                 .hashtag(hashtag)

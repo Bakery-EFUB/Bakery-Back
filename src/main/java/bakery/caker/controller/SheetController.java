@@ -2,10 +2,10 @@ package bakery.caker.controller;
 
 import bakery.caker.config.LoginUser;
 import bakery.caker.dto.CommentDTO;
-import bakery.caker.dto.OrderDTO;
+import bakery.caker.dto.SheetDTO;
 import bakery.caker.dto.SessionUserDTO;
 import bakery.caker.service.CommentService;
-import bakery.caker.service.OrderService;
+import bakery.caker.service.SheetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,56 +14,56 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/orders")
-public class OrderController {
-    private final OrderService orderService;
+public class SheetController {
+    private final SheetService sheetService;
     private final CommentService commentService;
 
     @GetMapping()
     public ResponseEntity<?> getOrders(){
-        return new ResponseEntity<>(orderService.getOrders(), HttpStatus.OK);
+        return new ResponseEntity<>(sheetService.getOrders(), HttpStatus.OK);
     }
 
     @GetMapping("/{loc_gu}/{loc_dong}")
     public ResponseEntity<?> getFilteredOrders(@PathVariable("loc_gu") String locGu, @PathVariable("loc_dong") String locDong){
-        return new ResponseEntity<>(orderService.getLocOrders(locGu, locDong), HttpStatus.OK);
+        return new ResponseEntity<>(sheetService.getLocOrders(locGu, locDong), HttpStatus.OK);
     }
 
     @GetMapping("/{order_id}")
     public ResponseEntity<?> getOrder(@PathVariable("order_id") Long orderId){
-        return new ResponseEntity<>(orderService.getOrder(orderId), HttpStatus.OK);
+        return new ResponseEntity<>(sheetService.getOrder(orderId), HttpStatus.OK);
     }
 
     @GetMapping("/myPin")
     public ResponseEntity<?> getCommentOrders(@LoginUser SessionUserDTO sessionUser){
-        return new ResponseEntity<>(orderService.getOrdersByComment(sessionUser.getMemberId()), HttpStatus.OK);
+        return new ResponseEntity<>(sheetService.getOrdersByComment(sessionUser.getMemberId()), HttpStatus.OK);
     }
 
     @GetMapping("/myOrder")
     public ResponseEntity<?> getMyOrders(@LoginUser SessionUserDTO sessionUser){
-        return new ResponseEntity<>(orderService.getMyOrders(sessionUser.getMemberId()), HttpStatus.OK);
+        return new ResponseEntity<>(sheetService.getMyOrders(sessionUser.getMemberId()), HttpStatus.OK);
     }
 
     @PostMapping()
-    public ResponseEntity<?> createOrder(@LoginUser SessionUserDTO sessionUser, @RequestBody OrderDTO orderDTO){
-        orderService.saveOrder(sessionUser.getMemberId(), orderDTO);
+    public ResponseEntity<?> createOrder(@LoginUser SessionUserDTO sessionUser, @RequestBody SheetDTO sheetDTO){
+        sheetService.saveOrder(sessionUser.getMemberId(), sheetDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{order_id}")
     public ResponseEntity<?> deleteOrder(@LoginUser SessionUserDTO sessionUser, @PathVariable("order_id") Long orderId){
-        orderService.deleteOrder(sessionUser.getMemberId(), orderId);
+        sheetService.deleteOrder(sessionUser.getMemberId(), orderId);
         return new ResponseEntity<>("delete success", HttpStatus.OK);
     }
 
     @PatchMapping("/{order_id}")
-    public ResponseEntity<?> updateOrder(@LoginUser SessionUserDTO sessionUser, @PathVariable("order_id") Long orderId, @RequestBody OrderDTO orderDTO){
-        orderService.updateOrder(sessionUser.getMemberId(), orderId, orderDTO);
+    public ResponseEntity<?> updateOrder(@LoginUser SessionUserDTO sessionUser, @PathVariable("order_id") Long orderId, @RequestBody SheetDTO sheetDTO){
+        sheetService.updateOrder(sessionUser.getMemberId(), orderId, sheetDTO);
         return new ResponseEntity<>("update success", HttpStatus.OK);
     }
 
     @GetMapping("/newOrder")
     public ResponseEntity<?> getNewOrders(){
-        return new ResponseEntity<>(orderService.getOrdersByCreatedAt(), HttpStatus.OK);
+        return new ResponseEntity<>(sheetService.getOrdersByCreatedAt(), HttpStatus.OK);
     }
 
     @GetMapping("/{order_id}/comments")

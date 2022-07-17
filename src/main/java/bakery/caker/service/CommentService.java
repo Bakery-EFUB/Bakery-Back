@@ -6,7 +6,7 @@ import bakery.caker.dto.CommentDTO;
 import bakery.caker.dto.CommentResponseDTO;
 import bakery.caker.repository.CommentRepository;
 import bakery.caker.repository.MemberRepository;
-import bakery.caker.repository.OrderRepository;
+import bakery.caker.repository.SheetRepository;
 import bakery.caker.repository.RecommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CommentService {
     private final MemberRepository memberRepository;
-    private final OrderRepository orderRepository;
+    private final SheetRepository sheetRepository;
     private final CommentRepository commentRepository;
     private final RecommentRepository recommentRepository;
 
@@ -28,7 +28,7 @@ public class CommentService {
     @Transactional
     public void createComment(Long memberId, Long orderId, CommentDTO comment){
         memberRepository.findById(memberId).ifPresent(
-                member -> orderRepository.findById(orderId).ifPresent(
+                member -> sheetRepository.findById(orderId).ifPresent(
                         order -> commentRepository.save(comment.toEntity(member, order))
                 )
         );
@@ -69,9 +69,9 @@ public class CommentService {
     //order comment 불러오기
     public CommentResponseDTO getComments(Long orderId){
         Map<Comment, List<Recomment>> comments = new HashMap<>();
-        orderRepository.findById(orderId).ifPresent(
+        sheetRepository.findById(orderId).ifPresent(
                 order -> {
-                    List<Comment> commentList = commentRepository.findAllByOrder(order);
+                    List<Comment> commentList = commentRepository.findAllBySheet(order);
                     for(Comment comment : commentList){
                         comments.put(comment, recommentRepository.findAllByComment(comment));
                     }
