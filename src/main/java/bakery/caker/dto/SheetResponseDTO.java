@@ -5,15 +5,15 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.Map;
 
 @Getter
 @NoArgsConstructor
-public class SheetOrderResponseDTO {
-    List<Sheet> sheetList;
+public class SheetResponseDTO {
+    Map<String, Sheet> sheetList;
 
     @Builder
-    public SheetOrderResponseDTO(List<Sheet> sheetList){
+    public SheetResponseDTO(Map<String, Sheet> sheetList){
         this.sheetList = sheetList;
     }
 }

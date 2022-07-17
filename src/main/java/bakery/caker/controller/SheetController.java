@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,8 +45,8 @@ public class SheetController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> createOrder(@LoginUser SessionUserDTO sessionUser, @RequestBody SheetDTO sheetDTO){
-        sheetService.saveOrder(sessionUser.getMemberId(), sheetDTO);
+    public ResponseEntity<?> createOrder(@LoginUser SessionUserDTO sessionUser, @RequestPart SheetDTO sheetDTO, @RequestPart MultipartFile file){
+        sheetService.saveOrder(sessionUser.getMemberId(), sheetDTO, file);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
