@@ -16,6 +16,7 @@ public class Comment {
     private String contents;
     private String nickname;
     private LocalDateTime createdAt;
+    private Boolean deletedFlag;
 
     @ManyToOne()
     @JoinColumn(name = "member_id")
@@ -32,5 +33,10 @@ public class Comment {
         this.createdAt = LocalDateTime.now();
         this.writer = writer;
         this.order = order;
+        this.deletedFlag = false;
+    }
+
+    public void updateDeletedFlag(){
+        this.deletedFlag = true;
     }
 }
