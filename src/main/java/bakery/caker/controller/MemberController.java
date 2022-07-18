@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
 
+import static bakery.caker.dto.MemberResponseDTO.*;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/members")
@@ -28,7 +30,7 @@ public class MemberController {
     }
 
     @GetMapping("/account/profile")
-    public MemberResponseDTO sessionMemberDetails(@LoginUser SessionUserDTO sessionUser) {
+    public MemberProfileResponseDTO sessionMemberDetails(@LoginUser SessionUserDTO sessionUser) {
         return memberService.findSessionMember(sessionUser.getMemberId());
     }
 
