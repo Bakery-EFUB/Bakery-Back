@@ -6,8 +6,10 @@ import bakery.caker.domain.Sheet;
 import bakery.caker.domain.Recomment;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class CommentDTO {
     private String contents;
 
