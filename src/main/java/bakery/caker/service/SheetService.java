@@ -5,6 +5,7 @@ import bakery.caker.domain.Sheet;
 import bakery.caker.domain.Recomment;
 import bakery.caker.dto.SheetDTO;
 import bakery.caker.dto.SheetResponseDTO;
+import bakery.caker.dto.SheetsResponseDTO;
 import bakery.caker.repository.CommentRepository;
 import bakery.caker.repository.MemberRepository;
 import bakery.caker.repository.SheetRepository;
@@ -41,15 +42,18 @@ public class SheetService {
         memberRepository.findById(memberId).ifPresent(
                 member -> {
                     S3Presigner presigner = ImageUploadService.createPresigner();
-                    String fileName = makeFileName(file);
+                    String fileName = null;
 
-                    URL url = ImageUploadService.getS3UploadURL(presigner, this.bucket, fileName);
-                    try {
-                        ImageUploadService.UploadImage(url, file);
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    if (!file.isEmpty()){
+                        makeFileName(file);
+                        URL url = ImageUploadService.getS3UploadURL(presigner, this.bucket, fileName);
+                        try {
+                            ImageUploadService.UploadImage(url, file);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        presigner.close();
                     }
-                    presigner.close();
 
                     sheetRepository.save(order.toEntity(member, fileName));
                 });
@@ -82,45 +86,33 @@ public class SheetService {
     }
 
     //처리되지 않은 모든 order 읽어오기
-    public SheetResponseDTO getOrders(){
+    public SheetsResponseDTO getOrders(){
         List<Sheet> sheets = sheetRepository.findAllByFinishedFlag(false);
-        Map<String, Sheet> sheetResponse = new HashMap<>();
+        List<SheetResponseDTO> sheetResponse = returnSheetResponse(sheets);
 
-        for(Sheet sheet:sheets){
-            sheetResponse.put(findImage(sheet.getSheetId()), sheet);
-        }
-
-        return SheetResponseDTO.builder()
-                .sheetList(sheetResponse)
-                .build();
+        return new SheetsResponseDTO(sheetResponse);
     }
 
     //처리되지 않은 location 별 order 읽어오기
-    public SheetResponseDTO getLocOrders(String locationGu, String locationDong){
+    public SheetsResponseDTO getLocOrders(String locationGu, String locationDong){
         List<Sheet> sheets = sheetRepository.findAllByLocationGuAndLocationDongAndFinishedFlag(locationGu, locationDong, false);
-        Map<String, Sheet> sheetResponse = new HashMap<>();
+        List<SheetResponseDTO> sheetResponse = returnSheetResponse(sheets);
 
-        for(Sheet sheet:sheets){
-            sheetResponse.put(findImage(sheet.getSheetId()), sheet);
-        }
-
-        return SheetResponseDTO.builder()
-                .sheetList(sheetResponse)
+        return SheetsResponseDTO.builder()
+                .sheetResponseDTOs(sheetResponse)
                 .build();
     }
 
     //특정 order 가져오기, 없는 경우 null return
-    public Map<?,?> getOrder(Long orderId){
-        AtomicReference<Sheet> order = new AtomicReference<>();
-        Map<String, Sheet> response = new HashMap<>();
+    public SheetResponseDTO getOrder(Long orderId){
+        AtomicReference<SheetResponseDTO> sheet = new AtomicReference<>();
         sheetRepository.findById(orderId).ifPresent(
-                order::set);
-        response.put(findImage(orderId), order.get());
-        return response;
+                order -> sheet.set(new SheetResponseDTO(order, findImage(order.getSheetId()))));
+        return sheet.get();
     }
 
     //최근 6개 order 보여주기
-    public SheetResponseDTO getOrdersByCreatedAt(){
+    public SheetsResponseDTO getOrdersByCreatedAt(){
         List<Sheet> sheetList = sheetRepository.findAllByFinishedFlagOrderByCreatedAtDesc(false);
         List<Sheet> sheets;
         if(sheetList.size() > 6){
@@ -129,23 +121,18 @@ public class SheetService {
         else{
             sheets = sheetList;
         }
-        Map<String, Sheet> sheetResponse = new HashMap<>();
+        List<SheetResponseDTO> sheetResponse = returnSheetResponse(sheets);
 
-        for(Sheet sheet:sheets){
-            sheetResponse.put(findImage(sheet.getSheetId()), sheet);
-        }
-
-        return SheetResponseDTO.builder()
-                .sheetList(sheetResponse)
+        return SheetsResponseDTO.builder()
+                .sheetResponseDTOs(sheetResponse)
                 .build();
     }
 
     //내가 댓글 단 제안서
-    public SheetResponseDTO getOrdersByComment(Long memberId){
+    public SheetsResponseDTO getOrdersByComment(Long memberId){
         List<Comment> comments = new ArrayList<>(Collections.emptyList());
         List<Recomment> recomments = new ArrayList<>(Collections.emptyList());
         Set<Sheet> sheets = new HashSet<>();
-        Map<String, Sheet> sheetResponse = new HashMap<>();
 
         memberRepository.findById(memberId).ifPresent(
                 member -> {
@@ -161,28 +148,38 @@ public class SheetService {
             sheets.add(recomment.getComment().getSheet());
         }
 
-        for(Sheet sheet : sheets){
-            sheetResponse.put(findImage(sheet.getSheetId()), sheet);
-        }
+        List<SheetResponseDTO> sheetResponse = returnSheetResponse(List.copyOf(sheets));
 
-        return new SheetResponseDTO(sheetResponse);
+        return SheetsResponseDTO.builder()
+                .sheetResponseDTOs(sheetResponse)
+                .build();
     }
 
     //내가 작성한 제안서 조회
-    public SheetResponseDTO getMyOrders(Long memberId){
-        Map<String, Sheet> sheetResponse = new HashMap<>();
+    public SheetsResponseDTO getMyOrders(Long memberId){
+
+        List<SheetResponseDTO> sheetResponse = new ArrayList<>();
 
         memberRepository.findById(memberId).ifPresent(
                 member -> {
                     List<Sheet> sheets = sheetRepository.findAllByMember(member);
-                    for(Sheet sheet:sheets){
-                        sheetResponse.put(findImage(sheet.getSheetId()), sheet);
-                    }
+                    sheetResponse.addAll(returnSheetResponse(sheets));
                 });
 
-        return SheetResponseDTO.builder()
-                .sheetList(sheetResponse)
+        return SheetsResponseDTO.builder()
+                .sheetResponseDTOs(sheetResponse)
                 .build();
+    }
+
+    //리스트로 orderResponse 돌려주기
+    private List<SheetResponseDTO> returnSheetResponse(List<Sheet> sheets){
+        List<SheetResponseDTO> sheetResponse = new ArrayList<>();
+
+        for(Sheet sheet:sheets){
+            sheetResponse.add(new SheetResponseDTO(sheet, findImage(sheet.getSheetId())));
+        }
+
+        return sheetResponse;
     }
 
     //파일 이름 생성
@@ -203,10 +200,12 @@ public class SheetService {
         sheetRepository.findById(orderId).ifPresent(
                 sheet -> {
                     String image = sheet.getImage();
-                    S3Presigner presigner = ImageUploadService.createPresigner();
+                    if(image != null){
+                        S3Presigner presigner = ImageUploadService.createPresigner();
 
-                    url.set(ImageUploadService.getS3DownloadURL(presigner, this.bucket, image));
-                    presigner.close();
+                        url.set(ImageUploadService.getS3DownloadURL(presigner, this.bucket, image));
+                        presigner.close();
+                    }
                 }
         );
         return url.get();

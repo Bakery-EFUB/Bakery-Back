@@ -9,10 +9,10 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class CommentsResponseDTO {
-    private List<CommentResponseDTO> commentDTO;
+    private List<CommentResponseDTO> commentDTOs;
 
     @Builder
     public CommentsResponseDTO (List<CommentResponseDTO> commentDTO){
-        this.commentDTO = commentDTO;
+        this.commentDTOs = commentDTO;
     }
 }
