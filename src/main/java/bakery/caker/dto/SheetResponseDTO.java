@@ -45,6 +45,6 @@ public class SheetResponseDTO {
         this.member = sheet.getMember();
         this.hashtag = sheet.getHashtag();
         this.createdAt = sheet.getCreatedAt();
-        this.finishedFlag = false;
+        this.finishedFlag = sheet.getFinishedFlag();
     }
 }
