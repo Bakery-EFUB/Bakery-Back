@@ -7,15 +7,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @NoArgsConstructor
 public class CommentResponseDTO {
-    Map<Comment, List<Recomment>> comments;
+    private Comment comment;
+    private List<Recomment> recomments;
 
     @Builder
-    public CommentResponseDTO(Map<Comment, List<Recomment>> comments){
-        this.comments = comments;
+    public CommentResponseDTO(Comment comment, List<Recomment> recomments){
+        this.comment = comment;
+        this.recomments = recomments;
     }
 }

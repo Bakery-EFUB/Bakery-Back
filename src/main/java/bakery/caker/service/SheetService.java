@@ -110,16 +110,25 @@ public class SheetService {
     }
 
     //특정 order 가져오기, 없는 경우 null return
-    public Sheet getOrder(Long orderId){
+    public Map<?,?> getOrder(Long orderId){
         AtomicReference<Sheet> order = new AtomicReference<>();
+        Map<String, Sheet> response = new HashMap<>();
         sheetRepository.findById(orderId).ifPresent(
                 order::set);
-        return order.get();
+        response.put(findImage(orderId), order.get());
+        return response;
     }
 
     //최근 6개 order 보여주기
     public SheetResponseDTO getOrdersByCreatedAt(){
-        List<Sheet> sheets = sheetRepository.findAllByFinishedFlagOrderByCreatedAtDesc(false).subList(0, 6);
+        List<Sheet> sheetList = sheetRepository.findAllByFinishedFlagOrderByCreatedAtDesc(false);
+        List<Sheet> sheets;
+        if(sheetList.size() > 6){
+            sheets = sheetList.subList(0, 6);
+        }
+        else{
+            sheets = sheetList;
+        }
         Map<String, Sheet> sheetResponse = new HashMap<>();
 
         for(Sheet sheet:sheets){

@@ -1,9 +1,9 @@
 package bakery.caker.service;
 
 import bakery.caker.domain.Comment;
-import bakery.caker.domain.Recomment;
 import bakery.caker.dto.CommentDTO;
 import bakery.caker.dto.CommentResponseDTO;
+import bakery.caker.dto.CommentsResponseDTO;
 import bakery.caker.repository.CommentRepository;
 import bakery.caker.repository.MemberRepository;
 import bakery.caker.repository.SheetRepository;
@@ -12,9 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -67,16 +66,16 @@ public class CommentService {
     }
 
     //order comment 불러오기
-    public CommentResponseDTO getComments(Long orderId){
-        Map<Comment, List<Recomment>> comments = new HashMap<>();
+    public CommentsResponseDTO getComments(Long orderId){
+        List<CommentResponseDTO> comments = new ArrayList<>();
         sheetRepository.findById(orderId).ifPresent(
                 order -> {
                     List<Comment> commentList = commentRepository.findAllBySheet(order);
                     for(Comment comment : commentList){
-                        comments.put(comment, recommentRepository.findAllByComment(comment));
+                        comments.add(new CommentResponseDTO(comment, recommentRepository.findAllByComment(comment)));
                     }
                 }
         );
-        return new CommentResponseDTO(comments);
+        return new CommentsResponseDTO(comments);
     }
 }
