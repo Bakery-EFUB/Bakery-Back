@@ -46,6 +46,16 @@ public class MemberController {
         return memberService.modifySessionMember(sessionUser.getMemberId(), nickname, file);
     }
 
+    @PatchMapping("/signup/baker")
+    public SessionUserDTO roleModify(@LoginUser SessionUserDTO sessionUser) {
+        if(sessionUser.getFirstLogin()) {
+            return memberService.modifyRole(sessionUser.getMemberId());
+        }
+        else {
+            throw new IllegalArgumentException("이미 회원가입이 완료된 유저입니다.");
+        }
+    }
+
     @DeleteMapping("/account")
     public String memberDelete(@LoginUser SessionUserDTO sessionUser) {
         return memberService.deleteSessionMember(sessionUser.getMemberId());

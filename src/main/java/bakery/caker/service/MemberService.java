@@ -1,8 +1,10 @@
 package bakery.caker.service;
 
+import bakery.caker.config.Authority;
 import bakery.caker.domain.Member;
 import bakery.caker.dto.MemberRequestDTO;
 import bakery.caker.dto.MemberResponseDTO;
+import bakery.caker.dto.SessionUserDTO;
 import bakery.caker.repository.MemberRepository;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSCredentialsProvider;
@@ -98,6 +100,13 @@ public class MemberService {
         }catch(Exception e) {
             return "실패";
         }
+    }
+
+    @Transactional
+    public SessionUserDTO modifyRole(Long memberId) {
+        Member member = findMemberEntity(memberId);
+        member.updateAuthority(Authority.TRAINEE);
+        return new SessionUserDTO(member, false);
     }
 
     public Member findMemberEntity(Long memberId) {
