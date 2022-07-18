@@ -1,5 +1,6 @@
 package bakery.caker.repository;
 import bakery.caker.domain.Member;
+import bakery.caker.dto.StoreResponseDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,4 +13,5 @@ import java.util.Optional;
 @Repository
 public interface StoreRepository extends JpaRepository<Store, Long> {
     Optional<Store> findStoreByOwner(Long memberId);
+    List<StoreResponseDTO> findStoreByNameContaining(String q);
 }

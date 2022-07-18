@@ -1,6 +1,5 @@
 package bakery.caker.service;
 
-import lombok.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import javax.transaction.Transactional;
@@ -17,7 +16,6 @@ import bakery.caker.domain.Store;
 import bakery.caker.dto.StoreResponseDTO;
 import bakery.caker.repository.MemberRepository;
 import bakery.caker.repository.StoreRepository;
-import bakery.caker.service.ImageUploadService;
 
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,12 +42,14 @@ public class StoreService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public Long saveStore(StoreResponseDTO storeResponseDTO, MultipartFile imgFile) throws IOException {
+    public Long saveStore(StoreResponseDTO storeResponseDTO, MultipartFile mainImg, List<MultipartFile> menuImg) throws IOException {
         S3Presigner presigner = createPresigner();
-        String fileName = makeFileName(imgFile);
+        String fileName = makeFileName(mainImg);
+
+//        if (menuImg.size() != 0){ uploadMenuImg(presigner, menuImg);}
 
         URL url = ImageUploadService.getS3UploadURL(presigner, this.bucket, fileName);
-        ImageUploadService.UploadImage(url, imgFile);
+        ImageUploadService.UploadImage(url, mainImg);
         presigner.close();
         storeResponseDTO.updateMainImg(fileName);
 
@@ -97,10 +97,7 @@ public class StoreService {
 
     @Transactional
     public List<StoreResponseDTO> selectStoreByQuery(@RequestParam String q) {
-        List<StoreResponseDTO> storeResponseDTOList = new ArrayList<>();
-//        return StoreRepository.findAll(q).stream()
-//        .map(StoreResponseDTO)
-//        .collect(Collectors.toList());
+        List<StoreResponseDTO> storeResponseDTOList = storeRepository.findStoreByNameContaining(q);
         return storeResponseDTOList;
     }
 
@@ -156,4 +153,23 @@ public class StoreService {
         SimpleDateFormat date = new SimpleDateFormat("yyyyMMddHHmmss");
         return "caker-store-" + date.format(new Date()) + contentType;
     }
+
+    public static String makeMenuImgName(MultipartFile file) {
+        String fileName = file.getOriginalFilename();
+        int extension = fileName.indexOf(".");
+        String contentType = fileName.substring(extension);
+
+        SimpleDateFormat date = new SimpleDateFormat("yyyyMMddHHmmss");
+        return "caker-store-menu-" + date.format(new Date()) + contentType;
+    }
+
+
+//    public static void uploadMenuImg(S3Presigner presigner, List<MultipartFile> menuImg) throws IOException {
+//        for (MultipartFile element : menuImg) {
+//            String fileName = makeFileName(element);
+//            URL url = ImageUploadService.getS3UploadURL(presigner, this.bucket, fileName);
+//            ImageUploadService.UploadImage(url, element);
+//        }
+//
+//    }
 }

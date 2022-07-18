@@ -6,6 +6,8 @@ import bakery.caker.dto.StoreResponseDTO;
 import bakery.caker.service.StoreService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 import java.util.List;
 import org.springframework.ui.Model;
 import org.springframework.http.HttpStatus;
@@ -49,7 +51,7 @@ public class StoreController {
     }
 
     @PostMapping("/stores/myStore")
-    ResponseEntity<?> writeMyStore(@RequestPart StoreResponseDTO storeResponseDTO, @RequestPart MultipartFile imgFile) {
-        return new ResponseEntity<>(storeService.saveStore(storeResponseDTO, imgFile), HttpStatus.OK);
+    ResponseEntity<?> writeMyStore(@RequestPart StoreResponseDTO storedata, @RequestPart MultipartFile mainImg, @RequestPart List<MultipartFile> menuImg) throws IOException {
+        return new ResponseEntity<>(storeService.saveStore(storedata, mainImg, menuImg), HttpStatus.OK);
     }
 }
