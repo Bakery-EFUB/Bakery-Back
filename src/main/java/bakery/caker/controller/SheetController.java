@@ -8,6 +8,7 @@ import bakery.caker.service.CommentService;
 import bakery.caker.service.SheetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,7 +45,7 @@ public class SheetController {
         return new ResponseEntity<>(sheetService.getMyOrders(sessionUser.getMemberId()), HttpStatus.OK);
     }
 
-    @PostMapping()
+    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> createOrder(@LoginUser SessionUserDTO sessionUser, @RequestPart SheetDTO sheetDTO, @RequestPart MultipartFile file){
         sheetService.saveOrder(sessionUser.getMemberId(), sheetDTO, file);
         return new ResponseEntity<>(HttpStatus.CREATED);
