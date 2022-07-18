@@ -17,12 +17,13 @@ import java.time.LocalDateTime;
 public class Store {
     
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "store_id")
     private Long id;
 
+    @ManyToOne()
     @JoinColumn(name = "member_id", nullable = false)
-    private Long owner;
+    private Member owner;
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String name;
@@ -57,7 +58,7 @@ public class Store {
 
 
     @Builder
-    public Store(Long id, Long owner, String name, String mainImg, String readme, String address, String kakaoUrl, String instagram, Boolean certifyFlag,String openTime, String phoneNumber, LocalDateTime createdDate) {
+    public Store(Long id, Member owner, String name, String mainImg, String readme, String address, String kakaoUrl, String instagram, Boolean certifyFlag,String openTime, String phoneNumber, LocalDateTime createdDate) {
         this.id = id;
         this.owner = owner;
         this.name = name;

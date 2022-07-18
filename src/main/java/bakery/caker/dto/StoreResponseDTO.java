@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @ToString
 @NoArgsConstructor
 public class StoreResponseDTO {
-    private Long owner;
+    private Member owner;
     private String ownerName;
     private String name;
     private String mainImg;
@@ -61,5 +61,8 @@ public class StoreResponseDTO {
 
     public void updateMainImg(String fileName){
         this.mainImg = fileName;
+    }
+    public void updateUser(Member owner){
+        this.owner = owner;
     }
 }

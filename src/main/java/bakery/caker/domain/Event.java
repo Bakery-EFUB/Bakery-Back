@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import bakery.caker.domain.Store;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -17,11 +18,12 @@ import java.time.LocalDateTime;
 public class Event {
     
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne()
     @JoinColumn(name = "store_id", nullable = false)
-    private Long store;
+    private Store store;
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
@@ -33,7 +35,7 @@ public class Event {
 
 
     @Builder
-    public Event(Long id, Long store, String content, LocalDateTime pickupDate, LocalDateTime pickupTime) {
+    public Event(Long id, Store store, String content, LocalDateTime pickupDate, LocalDateTime pickupTime) {
         this.id = id;
         this.store = store;
         this.content = content;

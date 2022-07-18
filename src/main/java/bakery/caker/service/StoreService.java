@@ -42,18 +42,19 @@ public class StoreService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public Long saveStore(StoreResponseDTO storeResponseDTO, MultipartFile mainImg, List<MultipartFile> menuImg) throws IOException {
+    public Long saveStore(Long memberId, StoreResponseDTO storeResponseDTO, MultipartFile mainImg, List<MultipartFile> menuImg) throws IOException {
+        Member owner = memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다 "));
         S3Presigner presigner = createPresigner();
         String fileName = makeFileName(mainImg);
-
-//        if (menuImg.size() != 0){ uploadMenuImg(presigner, menuImg);}
-
         URL url = ImageUploadService.getS3UploadURL(presigner, this.bucket, fileName);
         ImageUploadService.UploadImage(url, mainImg);
         presigner.close();
         storeResponseDTO.updateMainImg(fileName);
+        storeResponseDTO.updateUser(owner);
+        Long storeId = storeRepository.save(storeResponseDTO.toEntity()).getId();
 
-        return storeRepository.save(storeResponseDTO.toEntity()).getId();
+        if (menuImg.size() != 0){ uploadMenuImg(presigner, menuImg, storeId.toString());}
+        return storeId;
     }
 
     @Transactional
@@ -63,7 +64,7 @@ public class StoreService {
 
         for (Store store : StoreList) {
             // 주인장 찾기
-            Long memberId = store.getOwner();
+            Long memberId = store.getOwner().getMemberId();
             Optional<Member> user = memberRepository.findMemberByMemberIdAndDeleteFlagIsFalse(memberId);
             if (user.isPresent()) {
                 String ownerName = user.get().getNickname();
@@ -80,10 +81,11 @@ public class StoreService {
         List<Store> StoreList = storeRepository.findAll();
         List<StoreResponseDTO> storeResponseDTOList = new ArrayList<>();
         Collections.shuffle(StoreList);
+        if (StoreList.size() < 6){return storeResponseDTOList;}
         for (int i = 0; i<6; i++){
             Store store = StoreList.get(i);
             // 주인장 찾기
-            Long memberId = store.getOwner();
+            Long memberId = store.getOwner().getMemberId();
             Optional<Member> user = memberRepository.findMemberByMemberIdAndDeleteFlagIsFalse(memberId);
             if (user.isPresent()) {
                 String ownerName = user.get().getNickname();
@@ -104,7 +106,7 @@ public class StoreService {
     @Transactional
     public StoreResponseDTO getStoreDetail(Long id) {
         Store store = storeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 스토어가 존재하지 않습니다 id= "+id ));;
-        Long memberId = store.getOwner();
+        Long memberId = store.getOwner().getMemberId();
         Optional<Member> user = memberRepository.findMemberByMemberIdAndDeleteFlagIsFalse(memberId);
         String ownerName = user.get().getNickname();
         String imgUrl = findStoreMainImage(id);
@@ -112,10 +114,9 @@ public class StoreService {
         }
 
     @Transactional
-    public StoreResponseDTO getStoreDetailByOwner(Long memberId) {
-        Store store = storeRepository.findStoreByOwner(memberId).orElseThrow(() -> new IllegalArgumentException("해당 유저의 스토어가 존재하지 않습니다 id= "+memberId));
-        Optional<Member> user = memberRepository.findMemberByMemberIdAndDeleteFlagIsFalse(memberId);
-        String ownerName = user.get().getNickname();
+    public StoreResponseDTO getStoreDetailByOwner(Member owner) {
+        Store store = storeRepository.findStoreByOwner(owner).orElseThrow(() -> new IllegalArgumentException("해당 유저의 스토어가 존재하지 않습니다 id= "));
+        String ownerName = owner.getNickname();
         String imgUrl = findStoreMainImage(store.getId());
         return new StoreResponseDTO(store, ownerName, imgUrl);
     }
@@ -164,12 +165,13 @@ public class StoreService {
     }
 
 
-//    public static void uploadMenuImg(S3Presigner presigner, List<MultipartFile> menuImg) throws IOException {
-//        for (MultipartFile element : menuImg) {
-//            String fileName = makeFileName(element);
-//            URL url = ImageUploadService.getS3UploadURL(presigner, this.bucket, fileName);
-//            ImageUploadService.UploadImage(url, element);
-//        }
-//
-//    }
+    public void uploadMenuImg(S3Presigner presigner, List<MultipartFile> menuImg, String storeId) throws IOException {
+        for (MultipartFile element : menuImg) {
+            String fileName = makeFileName(element);
+            fileName = storeId +"/"+ fileName;
+            URL url = ImageUploadService.getS3UploadURL(presigner, this.bucket, fileName);
+            ImageUploadService.UploadImage(url, element);
+        }
+
+    }
 }

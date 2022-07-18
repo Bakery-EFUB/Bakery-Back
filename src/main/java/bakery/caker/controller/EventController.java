@@ -22,8 +22,8 @@ public class EventController {
     }
 
     @PostMapping("/events")
-    ResponseEntity<?> write(@RequestBody EventResponseDTO eventResponseDTO) {
-        return new ResponseEntity<>(eventService.saveEvent(eventResponseDTO), HttpStatus.OK);
+    ResponseEntity<?> write(@LoginUser SessionUserDTO sessionUser, @RequestBody EventResponseDTO eventResponseDTO) {
+        return new ResponseEntity<>(eventService.saveEvent(sessionUser.getMemberId(), eventResponseDTO), HttpStatus.OK);
     }
 
     @DeleteMapping("/store/{store_id}/events/{events_id}")

@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @ToString
 @NoArgsConstructor
 public class StoreRequestDTO {
-    private Long owner;
+    private Member owner;
     private String name;
     private String mainImg;
     private String readme;
@@ -26,7 +26,7 @@ public class StoreRequestDTO {
     private LocalDateTime createdDate;
 
     @Builder
-    public StoreRequestDTO(Long owner, String name, String mainImg,String readme, String address, String kakaoUrl, String instagram, boolean certifyFlag,
+    public StoreRequestDTO(Member owner, String name, String mainImg,String readme, String address, String kakaoUrl, String instagram, boolean certifyFlag,
                            String openTime, String phoneNumber, LocalDateTime createdDate) {
         this.owner = owner;
         this.name = name;

@@ -1,4 +1,5 @@
 package bakery.caker.dto;
+import bakery.caker.domain.Member;
 import bakery.caker.domain.Store;
 
 import lombok.*;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class EventResponseDTO {
     private String storeName;
-    private Long store;
+    private Store store;
     private String content;
     private LocalDateTime pickupDate;
     private LocalDateTime pickupTime;
@@ -35,5 +36,8 @@ public class EventResponseDTO {
                 .pickupTime(pickupTime)
                 .build();
         return event;
+    }
+    public void updateStore(Store store){
+        this.store = store;
     }
 }

@@ -1,5 +1,6 @@
 package bakery.caker.service;
 
+import bakery.caker.domain.Member;
 import bakery.caker.domain.Store;
 import bakery.caker.dto.EventResponseDTO;
 
@@ -47,7 +48,10 @@ public class EventService {
     }
 
     @Transactional
-    public Long saveEvent(EventResponseDTO eventResponseDTO)  {
+    public Long saveEvent(Long memberId, EventResponseDTO eventResponseDTO)  {
+        Member owner = memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다 "));
+        Store store = storeRepository.findStoreByOwner(owner).orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다 "));
+        eventResponseDTO.updateStore(store);
         return eventRepository.save(eventResponseDTO.toEntity()).getId();
     }
 
@@ -55,7 +59,7 @@ public class EventService {
     public void deleteEvent(Long store_id, Long event_id, Long owner_id) {
         //세션 유저가 가게 주인일때만 삭제 가능
         Optional<Store> store = storeRepository.findById(store_id);
-        if( owner_id == store.get().getOwner()){
+        if( owner_id == store.get().getOwner().getMemberId()){
             eventRepository.deleteById(event_id);
         }
         else return;
