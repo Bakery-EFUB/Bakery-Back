@@ -3,6 +3,9 @@ package bakery.caker.service;
 import bakery.caker.domain.Member;
 import bakery.caker.dto.MemberRequestDTO;
 import bakery.caker.dto.MemberResponseDTO;
+import bakery.caker.dto.SessionUserDTO;
+import bakery.caker.exception.CustomException;
+import bakery.caker.exception.ErrorCode;
 import bakery.caker.repository.MemberRepository;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSCredentialsProvider;
@@ -100,7 +103,7 @@ public class MemberService {
 
     public Member findMemberEntity(Long memberId) {
         return memberRepository.findMemberByMemberIdAndDeleteFlagIsFalse(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("유저가 존재하지 않습니다 id= "+memberId));
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
     }
 
     public static String makeFileName(MultipartFile file) {
