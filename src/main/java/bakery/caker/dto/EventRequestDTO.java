@@ -12,17 +12,14 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class EventResponseDTO {
-    private String storeName;
-    private Store store;
+public class EventRequestDTO {
     private String content;
     private LocalDateTime pickupDate;
     private LocalDateTime pickupTime;
 
     @Builder
-    public EventResponseDTO(String storeName, String content, LocalDateTime pickupDate,
+    public EventRequestDTO( String content, LocalDateTime pickupDate,
                             LocalDateTime pickupTime){
-        this.storeName = storeName;
         this.content = content;
         this.pickupDate = pickupDate;
         this.pickupTime = pickupTime;
@@ -30,16 +27,10 @@ public class EventResponseDTO {
 
     public Event toEntity() {
         Event event = Event.builder()
-                .store(store)
                 .content(content)
                 .pickupDate(pickupDate)
                 .pickupTime(pickupTime)
                 .build();
         return event;
     }
-    public void updateStore(Store store){
-        this.store = store;
-    }
-
-    public void updateStoreName(String name) {this.storeName = name;}
 }

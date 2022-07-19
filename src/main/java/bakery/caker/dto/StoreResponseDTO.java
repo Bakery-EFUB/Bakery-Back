@@ -27,7 +27,8 @@ public class StoreResponseDTO {
     private LocalDateTime createdDate;
 
     @Builder
-    public StoreResponseDTO(Store entity,String ownerName, String imgUrl) {
+    public StoreResponseDTO(Store entity,Member owner, String ownerName, String imgUrl) {
+        this.owner = owner;
         this.ownerName = ownerName;
         this.name = entity.getName();
         this.mainImg = imgUrl;

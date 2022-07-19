@@ -69,7 +69,7 @@ public class StoreService {
             if (user.isPresent()) {
                 String ownerName = user.get().getNickname();
                 String imgUrl = findStoreMainImage(store.getId());
-                StoreResponseDTO storeResponseDTO = new StoreResponseDTO(store, ownerName, imgUrl);
+                StoreResponseDTO storeResponseDTO = new StoreResponseDTO(store, user.get(), ownerName, imgUrl);
                 storeResponseDTOList.add(storeResponseDTO);
             }
         }
@@ -90,7 +90,7 @@ public class StoreService {
             if (user.isPresent()) {
                 String ownerName = user.get().getNickname();
                 String imgUrl = findStoreMainImage(store.getId());
-                StoreResponseDTO storeResponseDTO = new StoreResponseDTO(store, ownerName, imgUrl);
+                StoreResponseDTO storeResponseDTO = new StoreResponseDTO(store, user.get(), ownerName, imgUrl);
                 storeResponseDTOList.add(storeResponseDTO);
             }
         }
@@ -105,20 +105,21 @@ public class StoreService {
 
     @Transactional
     public StoreResponseDTO getStoreDetail(Long id) {
-        Store store = storeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 스토어가 존재하지 않습니다 id= "+id ));;
+        Store store = storeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 스토어가 존재하지 않습니다 id= "+id ));
         Long memberId = store.getOwner().getMemberId();
         Optional<Member> user = memberRepository.findMemberByMemberIdAndDeleteFlagIsFalse(memberId);
         String ownerName = user.get().getNickname();
         String imgUrl = findStoreMainImage(id);
-        return new StoreResponseDTO(store, ownerName, imgUrl);
+        return new StoreResponseDTO(store,user.get(), ownerName, imgUrl);
         }
 
     @Transactional
-    public StoreResponseDTO getStoreDetailByOwner(Member owner) {
+    public StoreResponseDTO getStoreDetailByOwner(Long owner_id) {
+        Member owner  = memberRepository.findById(owner_id).orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다 id= "+ owner_id ));
         Store store = storeRepository.findStoreByOwner(owner).orElseThrow(() -> new IllegalArgumentException("해당 유저의 스토어가 존재하지 않습니다 id= "));
         String ownerName = owner.getNickname();
         String imgUrl = findStoreMainImage(store.getId());
-        return new StoreResponseDTO(store, ownerName, imgUrl);
+        return new StoreResponseDTO(store,owner, ownerName, imgUrl);
     }
 
 
@@ -167,7 +168,7 @@ public class StoreService {
 
     public void uploadMenuImg(S3Presigner presigner, List<MultipartFile> menuImg, String storeId) throws IOException {
         for (MultipartFile element : menuImg) {
-            String fileName = makeFileName(element);
+            String fileName = makeMenuImgName(element);
             fileName = storeId +"/"+ fileName;
             URL url = ImageUploadService.getS3UploadURL(presigner, this.bucket, fileName);
             ImageUploadService.UploadImage(url, element);

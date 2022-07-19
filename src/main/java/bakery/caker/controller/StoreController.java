@@ -45,16 +45,12 @@ public class StoreController {
 
     @GetMapping("/stores/{store_id}")
     ResponseEntity<?> getStoreDetail(@PathVariable("store_id") Long store_id) {
-        storeService.getStoreDetail(store_id);
-        return new ResponseEntity<>("successfully deleted", HttpStatus.OK);
+        return new ResponseEntity<>(storeService.getStoreDetail(store_id), HttpStatus.OK);
     }
 
     @GetMapping("/stores/myStore")
     ResponseEntity<?> getMyStoreDetail(@LoginUser SessionUserDTO sessionUser) {
-
-        Optional<Member> owner = memberRepository.findById(sessionUser.getMemberId());
-        storeService.getStoreDetailByOwner(owner.get());
-        return new ResponseEntity<>("successfully deleted", HttpStatus.OK);
+        return new ResponseEntity<>(storeService.getStoreDetailByOwner(sessionUser.getMemberId()), HttpStatus.OK);
     }
 
     @PostMapping("/stores/myStore")

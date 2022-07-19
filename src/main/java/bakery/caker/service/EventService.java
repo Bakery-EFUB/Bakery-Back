@@ -2,6 +2,7 @@ package bakery.caker.service;
 
 import bakery.caker.domain.Member;
 import bakery.caker.domain.Store;
+import bakery.caker.dto.EventRequestDTO;
 import bakery.caker.dto.EventResponseDTO;
 
 import java.util.ArrayList;
@@ -10,29 +11,26 @@ import java.util.Optional;
 
 import bakery.caker.domain.Event;
 
-import bakery.caker.dto.StoreResponseDTO;
 import bakery.caker.repository.MemberRepository;
 import bakery.caker.repository.StoreRepository;
 import bakery.caker.repository.EventRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
+@Service
+@RequiredArgsConstructor
 public class EventService {
 
     private final StoreRepository storeRepository;
     private final MemberRepository memberRepository;
     private final EventRepository eventRepository;
 
-    public EventService(StoreRepository storeRepository, MemberRepository memberRepository, EventRepository eventRepository) {
-        this.storeRepository = storeRepository;
-        this.memberRepository = memberRepository;
-        this.eventRepository = eventRepository;
-    }
-
     @Transactional
     public List<EventResponseDTO> getEventList(Long store_id) {
         Optional<Store> store = storeRepository.findById(store_id);
-        List<Event> EventList = eventRepository.findAllByStore(store_id);
+        List<Event> EventList = eventRepository.findAllEventByStoreId(store_id);
         List<EventResponseDTO> eventResponseDTOList = new ArrayList<>();
 
         for (Event event : EventList) {
@@ -48,11 +46,18 @@ public class EventService {
     }
 
     @Transactional
-    public Long saveEvent(Long memberId, EventResponseDTO eventResponseDTO)  {
+    public Long saveEvent(Long memberId, EventRequestDTO eventRequestDTO)  {
         Member owner = memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다 "));
-        Store store = storeRepository.findStoreByOwner(owner).orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다 "));
+        Store store = storeRepository.findStoreByOwner(owner).orElseThrow(() -> new IllegalArgumentException("해당 스토어가 존재하지 않습니다 "));
+        EventResponseDTO eventResponseDTO = EventResponseDTO.builder()
+                .storeName(store.getName())
+                .content(eventRequestDTO.getContent())
+                .pickupDate(eventRequestDTO.getPickupDate())
+                .pickupTime(eventRequestDTO.getPickupTime())
+                .build();
         eventResponseDTO.updateStore(store);
         return eventRepository.save(eventResponseDTO.toEntity()).getId();
+//        return memberId;
     }
 
     @Transactional
