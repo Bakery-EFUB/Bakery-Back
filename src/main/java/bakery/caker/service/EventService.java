@@ -28,9 +28,9 @@ public class EventService {
     private final EventRepository eventRepository;
 
     @Transactional
-    public List<EventResponseDTO> getEventList(Long store_id) {
-        Optional<Store> store = storeRepository.findById(store_id);
-        List<Event> EventList = eventRepository.findAllEventByStoreId(store_id);
+    public List<EventResponseDTO> getEventList(Long storeId) {
+        Optional<Store> store = storeRepository.findById(storeId);
+        List<Event> EventList = eventRepository.findAllEventByStoreId(storeId);
         List<EventResponseDTO> eventResponseDTOList = new ArrayList<>();
 
         for (Event event : EventList) {
@@ -61,11 +61,11 @@ public class EventService {
     }
 
     @Transactional
-    public void deleteEvent(Long store_id, Long event_id, Long owner_id) {
+    public void deleteEvent(Long storeId, Long eventId, Long ownerId) {
         //세션 유저가 가게 주인일때만 삭제 가능
-        Optional<Store> store = storeRepository.findById(store_id);
-        if( owner_id == store.get().getOwner().getMemberId()){
-            eventRepository.deleteById(event_id);
+        Optional<Store> store = storeRepository.findById(storeId);
+        if( ownerId.equals(store.get().getOwner().getMemberId())){
+            eventRepository.deleteById(eventId);
         }
         else return;
     }

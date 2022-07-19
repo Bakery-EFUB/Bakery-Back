@@ -13,7 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-@Controller
+@RestController
 public class EventController {
     private EventService eventService;
 
@@ -21,10 +21,10 @@ public class EventController {
         this.eventService = eventService;
     }
 
-    @GetMapping("/store/{store_id}/events")
-    ResponseEntity<?> getEventList(@PathVariable("store_id") Long store_id) {
+    @GetMapping("/store/{storeId}/events")
+    ResponseEntity<?> getEventList(@PathVariable("storeId") Long storeId) {
 
-        return new ResponseEntity<>(eventService.getEventList(store_id), HttpStatus.OK);
+        return new ResponseEntity<>(eventService.getEventList(storeId), HttpStatus.OK);
     }
 
     @PostMapping("/events")
@@ -34,11 +34,11 @@ public class EventController {
         return new ResponseEntity<>(eventService.saveEvent(sessionUser.getMemberId(), eventrequestDTO), HttpStatus.OK);
     }
 
-    @DeleteMapping("/store/{store_id}/events/{events_id}")
-    ResponseEntity<?> delete(@PathVariable("store_id") Long store_id,
+    @DeleteMapping("/store/{storeId}/events/{events_id}")
+    ResponseEntity<?> delete(@PathVariable("storeId") Long storeId,
                              @PathVariable("events_id") Long events_id,
                              @LoginUser SessionUserDTO sessionUser) {
-        eventService.deleteEvent(store_id,store_id,sessionUser.getMemberId());
+        eventService.deleteEvent(storeId,storeId,sessionUser.getMemberId());
         return new ResponseEntity<>("successfully deleted", HttpStatus.OK);
     }
 }

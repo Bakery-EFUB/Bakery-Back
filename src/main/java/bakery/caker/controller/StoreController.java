@@ -18,10 +18,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
-@Controller
+@RestController
 public class StoreController {
     private StoreService storeService;
-    private MemberRepository memberRepository;
 
     public StoreController(StoreService storeService) {
         this.storeService = storeService;
@@ -43,9 +42,9 @@ public class StoreController {
       return new ResponseEntity<>(storeService.selectStoreByQuery(q), HttpStatus.OK);
    }
 
-    @GetMapping("/stores/{store_id}")
-    ResponseEntity<?> getStoreDetail(@PathVariable("store_id") Long store_id) {
-        return new ResponseEntity<>(storeService.getStoreDetail(store_id), HttpStatus.OK);
+    @GetMapping("/stores/{storeId}")
+    ResponseEntity<?> getStoreDetail(@PathVariable("storeId") Long storeId) {
+        return new ResponseEntity<>(storeService.getStoreDetail(storeId), HttpStatus.OK);
     }
 
     @GetMapping("/stores/myStore")
