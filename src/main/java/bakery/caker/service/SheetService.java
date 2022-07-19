@@ -45,7 +45,7 @@ public class SheetService {
                     String fileName = null;
 
                     if (!file.isEmpty()){
-                        makeFileName(file);
+                        fileName = makeFileName(file);
                         URL url = ImageUploadService.getS3UploadURL(presigner, this.bucket, fileName);
                         try {
                             ImageUploadService.UploadImage(url, file);
