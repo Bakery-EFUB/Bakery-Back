@@ -114,13 +114,6 @@ public class SheetService {
     //최근 6개 order 보여주기
     public SheetsResponseDTO findOrdersByCreatedAt(){
         List<Sheet> sheetList = sheetRepository.findTop6ByFinishedFlagOrderByCreatedAtDesc(false);
-//        List<Sheet> sheets;
-//        if(sheetList.size() > 6){
-//            sheets = sheetList.subList(0, 6);
-//        }
-//        else{
-//            sheets = sheetList;
-//        }
         List<SheetResponseDTO> sheetResponse = returnSheetResponse(sheetList);
 
         return SheetsResponseDTO.builder()
