@@ -26,7 +26,7 @@ public class CommentService {
     //comment 작성
     @Transactional
     public void addComment(Long memberId, Long orderId, CommentDTO comment){
-        memberRepository.findById(memberId).ifPresent(
+        memberRepository.findMemberByMemberIdAndDeleteFlagIsFalse(memberId).ifPresent(
                 member -> sheetRepository.findById(orderId).ifPresent(
                         order -> commentRepository.save(comment.toEntity(member, order))
                 )
@@ -36,7 +36,7 @@ public class CommentService {
     //comment 삭제
     @Transactional
     public void removeComment(Long memberId, Long commentId){
-        memberRepository.findById(memberId).flatMap(member -> commentRepository.findById(commentId)).ifPresent(comment -> {
+        memberRepository.findMemberByMemberIdAndDeleteFlagIsFalse(memberId).flatMap(member -> commentRepository.findById(commentId)).ifPresent(comment -> {
             if (memberId.equals(comment.getWriter().getMemberId())) {
                 comment.updateDeletedFlag();
                 commentRepository.save(comment);
@@ -47,7 +47,7 @@ public class CommentService {
     //recomment 작성
     @Transactional
     public void addRecomment(Long memberId, Long commentId, CommentDTO recomment){
-        memberRepository.findById(memberId).ifPresent(
+        memberRepository.findMemberByMemberIdAndDeleteFlagIsFalse(memberId).ifPresent(
                 member -> commentRepository.findById(commentId).ifPresent(
                         comment -> recommentRepository.save(recomment.toRecommentEntity(member, comment))
                 )
@@ -57,7 +57,7 @@ public class CommentService {
     //recomment 삭제
     @Transactional
     public void removeRecomment(Long memberId, Long recommentId){
-        memberRepository.findById(memberId).flatMap(member -> recommentRepository.findById(recommentId)).ifPresent(recomment -> {
+        memberRepository.findMemberByMemberIdAndDeleteFlagIsFalse(memberId).flatMap(member -> recommentRepository.findById(recommentId)).ifPresent(recomment -> {
             if (memberId.equals(recomment.getWriter().getMemberId())) {
                 recomment.updateDeletedFlag();
                 recommentRepository.save(recomment);

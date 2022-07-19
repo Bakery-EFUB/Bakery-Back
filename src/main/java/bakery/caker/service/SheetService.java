@@ -39,7 +39,7 @@ public class SheetService {
     //새로운 order 저장
     @Transactional
     public void addOrder(Long memberId, SheetDTO order, MultipartFile file){
-        memberRepository.findById(memberId).ifPresent(
+        memberRepository.findMemberByMemberIdAndDeleteFlagIsFalse(memberId).ifPresent(
                 member -> {
                     S3Presigner presigner = ImageUploadService.createPresigner();
                     String fileName = null;
@@ -127,7 +127,7 @@ public class SheetService {
         List<Recomment> recomments = new ArrayList<>(Collections.emptyList());
         Set<Sheet> sheets = new HashSet<>();
 
-        memberRepository.findById(memberId).ifPresent(
+        memberRepository.findMemberByMemberIdAndDeleteFlagIsFalse(memberId).ifPresent(
                 member -> {
                     comments.addAll(commentRepository.findAllByWriter(member));
                     recomments.addAll(recommentRepository.findAllByWriter(member));
@@ -153,7 +153,7 @@ public class SheetService {
 
         List<SheetResponseDTO> sheetResponse = new ArrayList<>();
 
-        memberRepository.findById(memberId).ifPresent(
+        memberRepository.findMemberByMemberIdAndDeleteFlagIsFalse(memberId).ifPresent(
                 member -> {
                     List<Sheet> sheets = sheetRepository.findAllByMember(member);
                     sheetResponse.addAll(returnSheetResponse(sheets));
