@@ -61,7 +61,7 @@ public class StoreService {
     @Transactional
     public List<StoreResponseDTO> getStoreList() {
         List <String> menuUrl = new ArrayList<>();
-        List<Store> StoreList = storeRepository.findAll();
+        List<Store> StoreList = storeRepository.findAll_DeleteFlag(false);
         List<StoreResponseDTO> storeResponseDTOList = new ArrayList<>();
 
         for (Store store : StoreList) {
@@ -82,7 +82,7 @@ public class StoreService {
     @Transactional
     public List<StoreResponseDTO> getStoreRecomendList() {
         List <String> menuUrl = new ArrayList<>();
-        List<Store> StoreList = storeRepository.findAll();
+        List<Store> StoreList = storeRepository.findAll_DeleteFlag(false);
         List<StoreResponseDTO> storeResponseDTOList = new ArrayList<>();
         Collections.shuffle(StoreList);
         if (StoreList.size() < 6){return storeResponseDTOList;}
@@ -104,7 +104,7 @@ public class StoreService {
 
     @Transactional
     public List<StoreResponseDTO> selectStoreByQuery(String q) {
-        List<StoreResponseDTO> storeResponseDTOList = storeRepository.findAllStoreByNameContaining(q);
+        List<StoreResponseDTO> storeResponseDTOList = storeRepository.findAllByNameContaining(q);
         return storeResponseDTOList;
     }
 
