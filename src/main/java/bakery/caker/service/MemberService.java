@@ -48,23 +48,18 @@ public class MemberService {
     }
 
     @Transactional
-    public MemberResponseDTO modifySessionMember(Long memberId, String nickname, MultipartFile file) throws IOException {
+    public MemberResponseDTO modifySessionMember(Long memberId, String nickname, MultipartFile file) {
         Member member = findMemberEntity(memberId);
 
-        if(file!=null) {
-            modifyMemberImage(memberId, file);
-        }
-
-        if(nickname!=null) {
-            member.updateProfile(nickname);
-        }
+        if(file!=null) modifyMemberImage(memberId, file);
+        if(nickname!=null) member.updateProfile(nickname);
 
         String imageUrl = findProfileImage(memberId);
         return new MemberResponseDTO(member, imageUrl);
     }
 
     @Transactional
-    public void modifyMemberImage(Long memberId, MultipartFile file) throws IOException {
+    public void modifyMemberImage(Long memberId, MultipartFile file) {
         Member member = findMemberEntity(memberId);
 
         S3Presigner presigner = ImageUploadService.createPresigner();
@@ -92,18 +87,14 @@ public class MemberService {
 
     @Transactional
     public String deleteSessionMember(Long memberId) {
-        try {
-            Member member = findMemberEntity(memberId);
-            member.updateDeleteFlag();
-            return "삭제완료";
-        }catch(Exception e) {
-            return "실패";
-        }
+        Member member = findMemberEntity(memberId);
+        member.updateDeleteFlag();
+        return "삭제 완료";
     }
 
     public Member findMemberEntity(Long memberId) {
         return memberRepository.findMemberByMemberIdAndDeleteFlagIsFalse(memberId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND, null));
     }
 
     public static String makeFileName(MultipartFile file) {

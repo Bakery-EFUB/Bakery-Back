@@ -16,6 +16,7 @@ public enum ErrorCode {
     INVALID_IMAGE_FILE(BAD_REQUEST, "잘못된 이미지 파일입니다."),
     INVALID_SESSION_USER(BAD_REQUEST, "세션 유저가 비어있습니다."),
 
+
     //401 UNAUTHORIZED : 비인증 상태
     USER_UNAUTHORIZED(UNAUTHORIZED, "로그인이 필요합니다."),
 
@@ -30,7 +31,8 @@ public enum ErrorCode {
     EVENT_NOT_FOUND(NOT_FOUND, "해당 예약 정보를 찾을 수 없습니다."),
 
     //500 INTERNAL_SERVER_ERROR : 서버 내 문제
-    EXCEPTION(INTERNAL_SERVER_ERROR, "서버 내에 알 수 없는 오류가 발생했습니다.");
+    EXCEPTION(INTERNAL_SERVER_ERROR, "서버 내에 알 수 없는 오류가 발생했습니다."),
+    IO_EXCEPTION(INTERNAL_SERVER_ERROR, "이미지 업로드/다운로드 중 알 수 없는 오류가 발생했습니다.");
 
     private final HttpStatus httpStatus;
     private final String detail;

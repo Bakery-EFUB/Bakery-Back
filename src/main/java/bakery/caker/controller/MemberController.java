@@ -40,7 +40,7 @@ public class MemberController {
     @PatchMapping("/account/profile")
     public MemberResponseDTO memberModify(@LoginUser SessionUserDTO sessionUser,
                                           @RequestParam(value="nickname", required = false) String nickname,
-                                          @RequestParam(value="image", required = false)MultipartFile file) throws IOException {
+                                          @RequestParam(value="image", required = false)MultipartFile file) {
         return memberService.modifySessionMember(sessionUser.getMemberId(), nickname, file);
     }
 
