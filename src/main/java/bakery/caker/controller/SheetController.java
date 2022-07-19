@@ -21,79 +21,79 @@ public class SheetController {
     private final CommentService commentService;
 
     @GetMapping()
-    public ResponseEntity<?> getOrders(){
-        return new ResponseEntity<>(sheetService.getOrders(), HttpStatus.OK);
+    public ResponseEntity<?> allOrderList(){
+        return new ResponseEntity<>(sheetService.findOrders(), HttpStatus.OK);
     }
 
     @GetMapping("/{loc_gu}/{loc_dong}")
-    public ResponseEntity<?> getFilteredOrders(@PathVariable("loc_gu") String locGu, @PathVariable("loc_dong") String locDong){
-        return new ResponseEntity<>(sheetService.getLocOrders(locGu, locDong), HttpStatus.OK);
+    public ResponseEntity<?> filteredOrderList(@PathVariable("loc_gu") String locGu, @PathVariable("loc_dong") String locDong){
+        return new ResponseEntity<>(sheetService.findLocOrders(locGu, locDong), HttpStatus.OK);
     }
 
     @GetMapping("/{order_id}")
-    public ResponseEntity<?> getOrder(@PathVariable("order_id") Long orderId){
-        return new ResponseEntity<>(sheetService.getOrder(orderId), HttpStatus.OK);
+    public ResponseEntity<?> orderDetails(@PathVariable("order_id") Long orderId){
+        return new ResponseEntity<>(sheetService.findOrder(orderId), HttpStatus.OK);
     }
 
     @GetMapping("/myPin")
-    public ResponseEntity<?> getCommentOrders(@LoginUser SessionUserDTO sessionUser){
-        return new ResponseEntity<>(sheetService.getOrdersByComment(sessionUser.getMemberId()), HttpStatus.OK);
+    public ResponseEntity<?> commentOrderList(@LoginUser SessionUserDTO sessionUser){
+        return new ResponseEntity<>(sheetService.findOrdersByComment(sessionUser.getMemberId()), HttpStatus.OK);
     }
 
     @GetMapping("/myOrder")
-    public ResponseEntity<?> getMyOrders(@LoginUser SessionUserDTO sessionUser){
-        return new ResponseEntity<>(sheetService.getMyOrders(sessionUser.getMemberId()), HttpStatus.OK);
+    public ResponseEntity<?> myOrderList(@LoginUser SessionUserDTO sessionUser){
+        return new ResponseEntity<>(sheetService.findMyOrders(sessionUser.getMemberId()), HttpStatus.OK);
     }
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<?> createOrder(@LoginUser SessionUserDTO sessionUser, @RequestPart SheetDTO sheetDTO, @RequestPart MultipartFile file){
-        sheetService.saveOrder(sessionUser.getMemberId(), sheetDTO, file);
+    public ResponseEntity<?> orderAdd(@LoginUser SessionUserDTO sessionUser, @RequestPart SheetDTO sheetDTO, @RequestPart MultipartFile file){
+        sheetService.addOrder(sessionUser.getMemberId(), sheetDTO, file);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{order_id}")
-    public ResponseEntity<?> deleteOrder(@LoginUser SessionUserDTO sessionUser, @PathVariable("order_id") Long orderId){
-        sheetService.deleteOrder(sessionUser.getMemberId(), orderId);
+    public ResponseEntity<?> orderRemove(@LoginUser SessionUserDTO sessionUser, @PathVariable("order_id") Long orderId){
+        sheetService.removeOrder(sessionUser.getMemberId(), orderId);
         return new ResponseEntity<>("delete success", HttpStatus.OK);
     }
 
     @PatchMapping("/{order_id}")
-    public ResponseEntity<?> updateOrder(@LoginUser SessionUserDTO sessionUser, @PathVariable("order_id") Long orderId, @RequestBody SheetDTO sheetDTO){
-        sheetService.updateOrder(sessionUser.getMemberId(), orderId, sheetDTO);
+    public ResponseEntity<?> orderModify(@LoginUser SessionUserDTO sessionUser, @PathVariable("order_id") Long orderId, @RequestBody SheetDTO sheetDTO){
+        sheetService.modifyOrder(sessionUser.getMemberId(), orderId, sheetDTO);
         return new ResponseEntity<>("update success", HttpStatus.OK);
     }
 
     @GetMapping("/newOrder")
-    public ResponseEntity<?> getNewOrders(){
-        return new ResponseEntity<>(sheetService.getOrdersByCreatedAt(), HttpStatus.OK);
+    public ResponseEntity<?> newOrderList(){
+        return new ResponseEntity<>(sheetService.findOrdersByCreatedAt(), HttpStatus.OK);
     }
 
     @GetMapping("/{order_id}/comments")
-    public ResponseEntity<?> getComments(@PathVariable("order_id") Long orderId){
-        return new ResponseEntity<>(commentService.getComments(orderId), HttpStatus.OK);
+    public ResponseEntity<?> commentList(@PathVariable("order_id") Long orderId){
+        return new ResponseEntity<>(commentService.findComments(orderId), HttpStatus.OK);
     }
 
     @PostMapping("/{order_id}/comments")
-    public ResponseEntity<?> createComment(@LoginUser SessionUserDTO sessionUser, @PathVariable("order_id") Long orderId, @RequestBody CommentDTO commentDTO){
-        commentService.createComment(sessionUser.getMemberId(), orderId, commentDTO);
+    public ResponseEntity<?> commentAdd(@LoginUser SessionUserDTO sessionUser, @PathVariable("order_id") Long orderId, @RequestBody CommentDTO commentDTO){
+        commentService.addComment(sessionUser.getMemberId(), orderId, commentDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{order_id}/comments/{comment_id}")
-    public ResponseEntity<?> deleteComment(@LoginUser SessionUserDTO sessionUser, @PathVariable("comment_id") Long commentId){
-        commentService.deleteComment(sessionUser.getMemberId(), commentId);
+    public ResponseEntity<?> commentRemove(@LoginUser SessionUserDTO sessionUser, @PathVariable("comment_id") Long commentId){
+        commentService.removeComment(sessionUser.getMemberId(), commentId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/{order_id}/comments/{comment_id}/recomments")
-    public ResponseEntity<?> createRecomment(@LoginUser SessionUserDTO sessionUser, @PathVariable("comment_id") Long commentId, @RequestBody CommentDTO commentDTO){
-        commentService.createRecomment(sessionUser.getMemberId(), commentId, commentDTO);
+    public ResponseEntity<?> recommentAdd(@LoginUser SessionUserDTO sessionUser, @PathVariable("comment_id") Long commentId, @RequestBody CommentDTO commentDTO){
+        commentService.addRecomment(sessionUser.getMemberId(), commentId, commentDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{order_id}/comments/{comment_id}/recomments/{recomment_id}")
-    public ResponseEntity<?> deleteRecomment(@LoginUser SessionUserDTO sessionUser, @PathVariable("recomment_id") Long recommentId){
-        commentService.deleteRecomment(sessionUser.getMemberId(), recommentId);
+    public ResponseEntity<?> recommentRemove(@LoginUser SessionUserDTO sessionUser, @PathVariable("recomment_id") Long recommentId){
+        commentService.removeRecomment(sessionUser.getMemberId(), recommentId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

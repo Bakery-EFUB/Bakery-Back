@@ -38,7 +38,7 @@ public class SheetService {
 
     //새로운 order 저장
     @Transactional
-    public void saveOrder(Long memberId, SheetDTO order, MultipartFile file){
+    public void addOrder(Long memberId, SheetDTO order, MultipartFile file){
         memberRepository.findById(memberId).ifPresent(
                 member -> {
                     S3Presigner presigner = ImageUploadService.createPresigner();
@@ -61,7 +61,7 @@ public class SheetService {
 
     //order pickupDate 업데이트
     @Transactional
-    public void updateOrder(Long memberId, Long orderId, SheetDTO order){
+    public void modifyOrder(Long memberId, Long orderId, SheetDTO order){
         sheetRepository.findById(orderId).ifPresent(
                 o -> {
                     if(o.getMember().getMemberId().equals(memberId)){
@@ -74,7 +74,7 @@ public class SheetService {
 
     //order 사용 완료
     @Transactional
-    public void deleteOrder(Long memberId, Long orderId){
+    public void removeOrder(Long memberId, Long orderId){
         sheetRepository.findById(orderId).ifPresent(
                 o -> {
                     if(o.getMember().getMemberId().equals(memberId)){
@@ -86,7 +86,7 @@ public class SheetService {
     }
 
     //처리되지 않은 모든 order 읽어오기
-    public SheetsResponseDTO getOrders(){
+    public SheetsResponseDTO findOrders(){
         List<Sheet> sheets = sheetRepository.findAllByFinishedFlag(false);
         List<SheetResponseDTO> sheetResponse = returnSheetResponse(sheets);
 
@@ -94,7 +94,7 @@ public class SheetService {
     }
 
     //처리되지 않은 location 별 order 읽어오기
-    public SheetsResponseDTO getLocOrders(String locationGu, String locationDong){
+    public SheetsResponseDTO findLocOrders(String locationGu, String locationDong){
         List<Sheet> sheets = sheetRepository.findAllByLocationGuAndLocationDongAndFinishedFlag(locationGu, locationDong, false);
         List<SheetResponseDTO> sheetResponse = returnSheetResponse(sheets);
 
@@ -104,7 +104,7 @@ public class SheetService {
     }
 
     //특정 order 가져오기, 없는 경우 null return
-    public SheetResponseDTO getOrder(Long orderId){
+    public SheetResponseDTO findOrder(Long orderId){
         AtomicReference<SheetResponseDTO> sheet = new AtomicReference<>();
         sheetRepository.findById(orderId).ifPresent(
                 order -> sheet.set(new SheetResponseDTO(order, findImage(order.getSheetId()))));
@@ -112,7 +112,7 @@ public class SheetService {
     }
 
     //최근 6개 order 보여주기
-    public SheetsResponseDTO getOrdersByCreatedAt(){
+    public SheetsResponseDTO findOrdersByCreatedAt(){
         List<Sheet> sheetList = sheetRepository.findAllByFinishedFlagOrderByCreatedAtDesc(false);
         List<Sheet> sheets;
         if(sheetList.size() > 6){
@@ -129,7 +129,7 @@ public class SheetService {
     }
 
     //내가 댓글 단 제안서
-    public SheetsResponseDTO getOrdersByComment(Long memberId){
+    public SheetsResponseDTO findOrdersByComment(Long memberId){
         List<Comment> comments = new ArrayList<>(Collections.emptyList());
         List<Recomment> recomments = new ArrayList<>(Collections.emptyList());
         Set<Sheet> sheets = new HashSet<>();
@@ -156,7 +156,7 @@ public class SheetService {
     }
 
     //내가 작성한 제안서 조회
-    public SheetsResponseDTO getMyOrders(Long memberId){
+    public SheetsResponseDTO findMyOrders(Long memberId){
 
         List<SheetResponseDTO> sheetResponse = new ArrayList<>();
 

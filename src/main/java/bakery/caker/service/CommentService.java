@@ -25,7 +25,7 @@ public class CommentService {
 
     //comment 작성
     @Transactional
-    public void createComment(Long memberId, Long orderId, CommentDTO comment){
+    public void addComment(Long memberId, Long orderId, CommentDTO comment){
         memberRepository.findById(memberId).ifPresent(
                 member -> sheetRepository.findById(orderId).ifPresent(
                         order -> commentRepository.save(comment.toEntity(member, order))
@@ -35,7 +35,7 @@ public class CommentService {
 
     //comment 삭제
     @Transactional
-    public void deleteComment(Long memberId, Long commentId){
+    public void removeComment(Long memberId, Long commentId){
         memberRepository.findById(memberId).flatMap(member -> commentRepository.findById(commentId)).ifPresent(comment -> {
             if (memberId.equals(comment.getWriter().getMemberId())) {
                 comment.updateDeletedFlag();
@@ -46,7 +46,7 @@ public class CommentService {
 
     //recomment 작성
     @Transactional
-    public void createRecomment(Long memberId, Long commentId, CommentDTO recomment){
+    public void addRecomment(Long memberId, Long commentId, CommentDTO recomment){
         memberRepository.findById(memberId).ifPresent(
                 member -> commentRepository.findById(commentId).ifPresent(
                         comment -> recommentRepository.save(recomment.toRecommentEntity(member, comment))
@@ -56,7 +56,7 @@ public class CommentService {
 
     //recomment 삭제
     @Transactional
-    public void deleteRecomment(Long memberId, Long recommentId){
+    public void removeRecomment(Long memberId, Long recommentId){
         memberRepository.findById(memberId).flatMap(member -> recommentRepository.findById(recommentId)).ifPresent(recomment -> {
             if (memberId.equals(recomment.getWriter().getMemberId())) {
                 recomment.updateDeletedFlag();
@@ -66,7 +66,7 @@ public class CommentService {
     }
 
     //order comment 불러오기
-    public CommentsResponseDTO getComments(Long orderId){
+    public CommentsResponseDTO findComments(Long orderId){
         List<CommentResponseDTO> comments = new ArrayList<>();
         sheetRepository.findById(orderId).ifPresent(
                 order -> {
