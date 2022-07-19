@@ -30,6 +30,7 @@ public class Recomment extends BaseTimeEntity{
         this.nickname = nickname;
         this.writer = writer;
         this.comment = comment;
+        this.deletedFlag = false;
     }
 
     public void updateDeletedFlag(){
