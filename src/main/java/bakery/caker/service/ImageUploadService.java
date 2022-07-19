@@ -98,7 +98,7 @@ public class ImageUploadService {
 
     public static String checkContentType(String fileName) {
         int extension = fileName.indexOf(".");
-        String contentType = fileName.substring(extension);;
+        String contentType = fileName.substring(extension);
 
         if(ObjectUtils.isEmpty(contentType)){
             return null;

@@ -3,6 +3,7 @@ import bakery.caker.domain.Member;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import bakery.caker.domain.Store;
@@ -25,9 +26,10 @@ public class StoreResponseDTO {
     private String openTime;
     private String phoneNumber;
     private LocalDateTime createdDate;
+    private List<String> menuImg;
 
     @Builder
-    public StoreResponseDTO(Store entity,Member owner, String ownerName, String imgUrl) {
+    public StoreResponseDTO(Store entity,Member owner, String ownerName, String imgUrl, List<String> menuUrl) {
         this.owner = owner;
         this.ownerName = ownerName;
         this.name = entity.getName();
@@ -40,6 +42,7 @@ public class StoreResponseDTO {
         this.openTime = entity.getOpenTime();
         this.phoneNumber = entity.getPhoneNumber();
         this.createdDate = entity.getCreatedDate();
+        this.menuImg = menuUrl;
     }
 
     public Store toEntity() {

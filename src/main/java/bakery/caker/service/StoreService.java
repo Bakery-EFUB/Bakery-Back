@@ -48,17 +48,19 @@ public class StoreService {
         String fileName = makeFileName(mainImg);
         URL url = ImageUploadService.getS3UploadURL(presigner, this.bucket, fileName);
         ImageUploadService.UploadImage(url, mainImg);
-        presigner.close();
+
         storeResponseDTO.updateMainImg(fileName);
         storeResponseDTO.updateUser(owner);
         Long storeId = storeRepository.save(storeResponseDTO.toEntity()).getId();
 
         if (menuImg.size() != 0){ uploadMenuImg(presigner, menuImg, storeId.toString());}
+        presigner.close();
         return storeId;
     }
 
     @Transactional
     public List<StoreResponseDTO> getStoreList() {
+        List <String> menuUrl = new ArrayList<>();
         List<Store> StoreList = storeRepository.findAll();
         List<StoreResponseDTO> storeResponseDTOList = new ArrayList<>();
 
@@ -68,8 +70,9 @@ public class StoreService {
             Optional<Member> user = memberRepository.findMemberByMemberIdAndDeleteFlagIsFalse(memberId);
             if (user.isPresent()) {
                 String ownerName = user.get().getNickname();
-                String imgUrl = findStoreMainImage(store.getId());
-                StoreResponseDTO storeResponseDTO = new StoreResponseDTO(store, user.get(), ownerName, imgUrl);
+                S3Presigner presigner = createPresigner();
+                String imgUrl = findStoreMainImage(presigner,store.getId());
+                StoreResponseDTO storeResponseDTO = new StoreResponseDTO(store, user.get(), ownerName, imgUrl,menuUrl);
                 storeResponseDTOList.add(storeResponseDTO);
             }
         }
@@ -78,6 +81,7 @@ public class StoreService {
     
     @Transactional
     public List<StoreResponseDTO> getStoreRecomendList() {
+        List <String> menuUrl = new ArrayList<>();
         List<Store> StoreList = storeRepository.findAll();
         List<StoreResponseDTO> storeResponseDTOList = new ArrayList<>();
         Collections.shuffle(StoreList);
@@ -89,8 +93,9 @@ public class StoreService {
             Optional<Member> user = memberRepository.findMemberByMemberIdAndDeleteFlagIsFalse(memberId);
             if (user.isPresent()) {
                 String ownerName = user.get().getNickname();
-                String imgUrl = findStoreMainImage(store.getId());
-                StoreResponseDTO storeResponseDTO = new StoreResponseDTO(store, user.get(), ownerName, imgUrl);
+                S3Presigner presigner = createPresigner();
+                String imgUrl = findStoreMainImage(presigner,store.getId());
+                StoreResponseDTO storeResponseDTO = new StoreResponseDTO(store, user.get(), ownerName, imgUrl,menuUrl);
                 storeResponseDTOList.add(storeResponseDTO);
             }
         }
@@ -98,8 +103,8 @@ public class StoreService {
     }
 
     @Transactional
-    public List<StoreResponseDTO> selectStoreByQuery(@RequestParam String q) {
-        List<StoreResponseDTO> storeResponseDTOList = storeRepository.findStoreByNameContaining(q);
+    public List<StoreResponseDTO> selectStoreByQuery(String q) {
+        List<StoreResponseDTO> storeResponseDTOList = storeRepository.findAllStoreByNameContaining(q);
         return storeResponseDTOList;
     }
 
@@ -109,8 +114,16 @@ public class StoreService {
         Long memberId = store.getOwner().getMemberId();
         Optional<Member> user = memberRepository.findMemberByMemberIdAndDeleteFlagIsFalse(memberId);
         String ownerName = user.get().getNickname();
-        String imgUrl = findStoreMainImage(id);
-        return new StoreResponseDTO(store,user.get(), ownerName, imgUrl);
+
+        S3Presigner presigner = createPresigner();
+        String imgUrl = findStoreMainImage(presigner, id);
+        List <String> menuUrl = new ArrayList<>();
+        for(int i = 1; i < 5; i ++){
+            String menus = findStoreMenuImage(presigner, store.getId(), i);
+            menuUrl.add(menus);
+        }
+        presigner.close();
+        return new StoreResponseDTO(store,user.get(), ownerName, imgUrl, menuUrl);
         }
 
     @Transactional
@@ -118,8 +131,14 @@ public class StoreService {
         Member owner  = memberRepository.findById(owner_id).orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다 id= "+ owner_id ));
         Store store = storeRepository.findStoreByOwner(owner).orElseThrow(() -> new IllegalArgumentException("해당 유저의 스토어가 존재하지 않습니다 id= "));
         String ownerName = owner.getNickname();
-        String imgUrl = findStoreMainImage(store.getId());
-        return new StoreResponseDTO(store,owner, ownerName, imgUrl);
+        S3Presigner presigner = createPresigner();
+        String imgUrl = findStoreMainImage(presigner,store.getId());
+        List <String> menuUrl = new ArrayList<>();
+        for(int i = 1; i < 5; i ++){
+            String menus = findStoreMenuImage(presigner, store.getId(), i);
+            menuUrl.add(menus);
+        }
+        return new StoreResponseDTO(store,owner, ownerName, imgUrl,menuUrl);
     }
 
 
@@ -136,14 +155,17 @@ public class StoreService {
     }
 
     @Transactional
-    public String findStoreMainImage(Long storeId) {
+    public String findStoreMainImage(S3Presigner presigner, Long storeId) {
         Optional<Store> store = storeRepository.findById(storeId);
         String fileName = store.get().getMainImg();
-
-        S3Presigner presigner = createPresigner();
-
         String url = ImageUploadService.getS3DownloadURL(presigner, this.bucket, fileName);
-        presigner.close();
+        return url;
+    }
+
+    @Transactional
+    public String findStoreMenuImage(S3Presigner presigner, Long storeId, Number index) {
+        String fileName = storeId + "/caker-store-menu-"+ index+".png";
+        String url = ImageUploadService.getS3DownloadURL(presigner, this.bucket, fileName);
         return url;
     }
 
@@ -156,23 +178,17 @@ public class StoreService {
         return "caker-store-" + date.format(new Date()) + contentType;
     }
 
-    public static String makeMenuImgName(MultipartFile file) {
-        String fileName = file.getOriginalFilename();
-        int extension = fileName.indexOf(".");
-        String contentType = fileName.substring(extension);
-
-        SimpleDateFormat date = new SimpleDateFormat("yyyyMMddHHmmss");
-        return "caker-store-menu-" + date.format(new Date()) + contentType;
-    }
-
 
     public void uploadMenuImg(S3Presigner presigner, List<MultipartFile> menuImg, String storeId) throws IOException {
+        int index = 1;
         for (MultipartFile element : menuImg) {
-            String fileName = makeMenuImgName(element);
-            fileName = storeId +"/"+ fileName;
+            String fileName = element.getOriginalFilename();
+            int extension = fileName.indexOf(".");
+            String contentType = fileName.substring(extension);
+            fileName = storeId +"/caker-store-menu-"+ Integer.toString(index)+contentType;
             URL url = ImageUploadService.getS3UploadURL(presigner, this.bucket, fileName);
             ImageUploadService.UploadImage(url, element);
+            index = index + 1;
         }
-
     }
 }

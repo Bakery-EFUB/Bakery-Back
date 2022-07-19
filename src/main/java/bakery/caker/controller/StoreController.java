@@ -39,8 +39,8 @@ public class StoreController {
     }
 
     @GetMapping("/stores/search")
-    public List<?> getMemberById(@RequestParam String q){
-      return storeService.selectStoreByQuery(q);
+    ResponseEntity<?> getMemberById(@RequestParam(name = "keyword") String q){
+      return new ResponseEntity<>(storeService.selectStoreByQuery(q), HttpStatus.OK);
    }
 
     @GetMapping("/stores/{store_id}")

@@ -56,7 +56,6 @@ public class Store {
     @Column(updatable = false)
     private LocalDateTime createdDate;
 
-
     @Builder
     public Store(Long id, Member owner, String name, String mainImg, String readme, String address, String kakaoUrl, String instagram, Boolean certifyFlag,String openTime, String phoneNumber, LocalDateTime createdDate) {
         this.id = id;
