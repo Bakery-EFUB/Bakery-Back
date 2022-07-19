@@ -35,7 +35,7 @@ public class EventController {
     }
 
     @DeleteMapping("/store/{storeId}/events/{events_id}")
-    ResponseEntity<?> delete(@PathVariable("storeId") Long storeId,
+    ResponseEntity<?> deleteEvent(@PathVariable("storeId") Long storeId,
                              @PathVariable("events_id") Long events_id,
                              @LoginUser SessionUserDTO sessionUser) {
         eventService.deleteEvent(storeId,storeId,sessionUser.getMemberId());
