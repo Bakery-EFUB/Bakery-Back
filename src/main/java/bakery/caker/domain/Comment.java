@@ -2,20 +2,18 @@ package bakery.caker.domain;
 
 import lombok.*;
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
 @Table(name = "comment")
-public class Comment {
+public class Comment extends BaseTimeEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long commentId;
 
     private String contents;
     private String nickname;
-    private LocalDateTime createdAt;
     private Boolean deletedFlag;
 
     @ManyToOne()
@@ -30,7 +28,6 @@ public class Comment {
     public Comment(String contents, String nickname, Member writer, Sheet sheet){
         this.contents = contents;
         this.nickname = nickname;
-        this.createdAt = LocalDateTime.now();
         this.writer = writer;
         this.sheet = sheet;
         this.deletedFlag = false;

@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @Table(name = "sheet")
-public class Sheet {
+public class Sheet extends BaseTimeEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long sheetId;
@@ -26,7 +26,6 @@ public class Sheet {
     private LocalDateTime pickupDate;
     private Integer priceMin;
     private Integer priceMax;
-    private LocalDateTime createdAt;
     private String hashtag;
     private Boolean finishedFlag;
 
@@ -48,7 +47,6 @@ public class Sheet {
         this.priceMax = priceMax;
         this.member = member;
         this.hashtag = hashtag;
-        this.createdAt = LocalDateTime.now();
         this.finishedFlag = false;
     }
 
