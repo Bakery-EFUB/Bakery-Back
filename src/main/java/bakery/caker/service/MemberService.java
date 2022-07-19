@@ -1,8 +1,10 @@
 package bakery.caker.service;
 
+import bakery.caker.config.Authority;
 import bakery.caker.domain.Member;
 import bakery.caker.dto.MemberRequestDTO;
 import bakery.caker.dto.MemberResponseDTO;
+import bakery.caker.dto.SessionUserDTO;
 import bakery.caker.repository.MemberRepository;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSCredentialsProvider;
@@ -22,6 +24,8 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static bakery.caker.dto.MemberResponseDTO.*;
+
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -31,10 +35,10 @@ public class MemberService {
     private String bucket;
 
     @Transactional
-    public MemberResponseDTO findSessionMember(Long memberId) {
+    public MemberProfileResponseDTO findSessionMember(Long memberId) {
         Member member = findMemberEntity(memberId);
         String imageUrl = findProfileImage(memberId);
-        return new MemberResponseDTO(member, imageUrl);
+        return new MemberProfileResponseDTO(member, imageUrl);
     }
 
     @Transactional
@@ -98,12 +102,19 @@ public class MemberService {
         }
     }
 
+    @Transactional
+    public SessionUserDTO modifyRole(Long memberId) {
+        Member member = findMemberEntity(memberId);
+        member.updateAuthority(Authority.TRAINEE);
+        return new SessionUserDTO(member, false);
+    }
+
     public Member findMemberEntity(Long memberId) {
         return memberRepository.findMemberByMemberIdAndDeleteFlagIsFalse(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("유저가 존재하지 않습니다 id= "+memberId));
     }
 
-    public static String makeFileName(MultipartFile file) {
+    public String makeFileName(MultipartFile file) {
         String fileName = file.getOriginalFilename();
         int extension = fileName.indexOf(".");
         String contentType = fileName.substring(extension);
