@@ -61,20 +61,20 @@ public class StoreService {
     @Transactional
     public List<StoreResponseDTO> getStoreList() {
         List <String> menuUrl = new ArrayList<>();
-        List<Store> StoreList = storeRepository.findAll_DeleteFlag(false);
+        List<Store> StoreList = storeRepository.findStoresByOwner_DeleteFlag(false);
         List<StoreResponseDTO> storeResponseDTOList = new ArrayList<>();
 
         for (Store store : StoreList) {
             // 주인장 찾기
             Long memberId = store.getOwner().getMemberId();
             Optional<Member> user = memberRepository.findMemberByMemberIdAndDeleteFlagIsFalse(memberId);
-            if (user.isPresent()) {
-                String ownerName = user.get().getNickname();
-                S3Presigner presigner = createPresigner();
-                String imgUrl = findStoreMainImage(presigner,store.getId());
-                StoreResponseDTO storeResponseDTO = new StoreResponseDTO(store, user.get(), ownerName, imgUrl,menuUrl);
-                storeResponseDTOList.add(storeResponseDTO);
-            }
+
+            String ownerName = user.get().getNickname();
+            S3Presigner presigner = createPresigner();
+            String imgUrl = findStoreMainImage(presigner,store.getId());
+            StoreResponseDTO storeResponseDTO = new StoreResponseDTO(store, user.get(), ownerName, imgUrl,menuUrl);
+            storeResponseDTOList.add(storeResponseDTO);
+
         }
         return storeResponseDTOList;
     }
@@ -82,7 +82,7 @@ public class StoreService {
     @Transactional
     public List<StoreResponseDTO> getStoreRecomendList() {
         List <String> menuUrl = new ArrayList<>();
-        List<Store> StoreList = storeRepository.findAll_DeleteFlag(false);
+        List<Store> StoreList = storeRepository.findStoresByOwner_DeleteFlag(false);
         List<StoreResponseDTO> storeResponseDTOList = new ArrayList<>();
         Collections.shuffle(StoreList);
         if (StoreList.size() < 6){return storeResponseDTOList;}
@@ -103,8 +103,8 @@ public class StoreService {
     }
 
     @Transactional
-    public List<StoreResponseDTO> selectStoreByQuery(String q) {
-        List<StoreResponseDTO> storeResponseDTOList = storeRepository.findAllByNameContaining(q);
+    public List<Store> selectStoreByQuery(String q) {
+        List<Store> storeResponseDTOList = storeRepository.findByNameContaining(q);
         return storeResponseDTOList;
     }
 
@@ -171,7 +171,7 @@ public class StoreService {
 
     public static String makeFileName(MultipartFile file) {
         String fileName = file.getOriginalFilename();
-        int extension = fileName.indexOf(".");
+        int extension = fileName.lastIndexOf(".");
         String contentType = fileName.substring(extension);
 
         SimpleDateFormat date = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -183,7 +183,7 @@ public class StoreService {
         int index = 1;
         for (MultipartFile element : menuImg) {
             String fileName = element.getOriginalFilename();
-            int extension = fileName.indexOf(".");
+            int extension = fileName.lastIndexOf(".");
             String contentType = fileName.substring(extension);
             fileName = storeId +"/caker-store-menu-"+ Integer.toString(index)+contentType;
             URL url = ImageUploadService.getS3UploadURL(presigner, this.bucket, fileName);

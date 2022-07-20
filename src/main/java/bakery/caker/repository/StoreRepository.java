@@ -13,6 +13,6 @@ import java.util.Optional;
 @Repository
 public interface StoreRepository extends JpaRepository<Store, Long> {
     Optional<Store> findStoreByOwner(Member member);
-    List<StoreResponseDTO> findAllByNameContaining(String q);
-    List<Store> findAll_DeleteFlag(Boolean deleteFlag);
+    List<Store> findByNameContaining(String q);
+    List<Store> findStoresByOwner_DeleteFlag(Boolean deleteFlag);
 }

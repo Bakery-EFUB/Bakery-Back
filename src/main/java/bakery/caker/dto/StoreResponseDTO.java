@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @ToString
 @NoArgsConstructor
 public class StoreResponseDTO {
+    private Long id;
     private Member owner;
     private String ownerName;
     private String name;
@@ -30,6 +31,7 @@ public class StoreResponseDTO {
 
     @Builder
     public StoreResponseDTO(Store entity,Member owner, String ownerName, String imgUrl, List<String> menuUrl) {
+        this.id = entity.getId();
         this.owner = owner;
         this.ownerName = ownerName;
         this.name = entity.getName();
