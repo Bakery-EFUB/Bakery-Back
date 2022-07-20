@@ -26,7 +26,6 @@ public class StoreResponseDTO {
     private Boolean certifyFlag;
     private String openTime;
     private String phoneNumber;
-    private LocalDateTime createdDate;
     private List<String> menuImg;
 
     @Builder
@@ -43,7 +42,6 @@ public class StoreResponseDTO {
         this.certifyFlag = entity.getCertifyFlag();
         this.openTime = entity.getOpenTime();
         this.phoneNumber = entity.getPhoneNumber();
-        this.createdDate = entity.getCreatedDate();
         this.menuImg = menuUrl;
     }
 
@@ -59,7 +57,6 @@ public class StoreResponseDTO {
             .certifyFlag(certifyFlag)
             .openTime(openTime)
             .phoneNumber(phoneNumber)
-            .createdDate(createdDate)
             .build();
 
         return build;

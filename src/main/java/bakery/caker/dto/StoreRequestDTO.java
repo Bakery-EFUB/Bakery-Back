@@ -23,11 +23,10 @@ public class StoreRequestDTO {
     private Boolean certifyFlag;
     private String openTime;
     private String phoneNumber;
-    private LocalDateTime createdDate;
 
     @Builder
     public StoreRequestDTO(Member owner, String name, String mainImg,String readme, String address, String kakaoUrl, String instagram, boolean certifyFlag,
-                           String openTime, String phoneNumber, LocalDateTime createdDate) {
+                           String openTime, String phoneNumber) {
         this.owner = owner;
         this.name = name;
         this.mainImg = mainImg;
@@ -38,6 +37,5 @@ public class StoreRequestDTO {
         this.certifyFlag = certifyFlag;
         this.openTime = openTime;
         this.phoneNumber = phoneNumber;
-        this.createdDate = createdDate;
     }
 }

@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Store {
+public class Store  extends BaseTimeEntity {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -50,12 +50,8 @@ public class Store {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String phoneNumber;
 
-    @CreatedDate
-    @Column(updatable = false)
-    private LocalDateTime createdDate;
-
     @Builder
-    public Store(Member owner, String name, String mainImg, String readme, String address, String kakaoUrl, String instagram, Boolean certifyFlag,String openTime, String phoneNumber, LocalDateTime createdDate) {
+    public Store(Member owner, String name, String mainImg, String readme, String address, String kakaoUrl, String instagram, Boolean certifyFlag,String openTime, String phoneNumber) {
         this.owner = owner;
         this.name = name;
         this.mainImg = mainImg;
@@ -66,7 +62,6 @@ public class Store {
         this.certifyFlag = certifyFlag;
         this.openTime = openTime;
         this.phoneNumber = phoneNumber;
-        this.createdDate = createdDate;
 
     }
 }
