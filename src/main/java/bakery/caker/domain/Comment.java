@@ -1,5 +1,6 @@
 package bakery.caker.domain;
 
+import com.sun.istack.NotNull;
 import lombok.*;
 import javax.persistence.*;
 
@@ -12,7 +13,9 @@ public class Comment extends BaseTimeEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long commentId;
 
+    @NotNull
     private String contents;
+    @NotNull
     private String nickname;
     private Boolean deletedFlag;
 
