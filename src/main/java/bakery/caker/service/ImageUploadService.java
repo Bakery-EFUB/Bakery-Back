@@ -1,6 +1,8 @@
 package bakery.caker.service;
 
 import bakery.caker.domain.Member;
+import bakery.caker.exception.CustomException;
+import bakery.caker.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -54,21 +56,24 @@ public class ImageUploadService {
             return myURL;
 
         } catch (S3Exception e) {
-            e.getStackTrace();
+            throw new CustomException(ErrorCode.EXCEPTION, e.getMessage());
         }
-        return null;
     }
 
-    public static void UploadImage(URL url, MultipartFile file) throws IOException {
-        String contentType = checkContentType(file.getOriginalFilename());
+    public static void UploadImage(URL url, MultipartFile file) {
+        try{
+            String contentType = checkContentType(file.getOriginalFilename());
 
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setDoOutput(true);
-        connection.setRequestProperty("Content-Type", contentType);
-        connection.setRequestMethod("PUT");
-        connection.getOutputStream().write(file.getBytes());
-        connection.getResponseCode();
-        System.out.println("HTTP response code is " + connection.getResponseCode());
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoOutput(true);
+            connection.setRequestProperty("Content-Type", contentType);
+            connection.setRequestMethod("PUT");
+            connection.getOutputStream().write(file.getBytes());
+            connection.getResponseCode();
+            System.out.println("HTTP response code is " + connection.getResponseCode());
+        }catch(IOException e) {
+            throw new CustomException(ErrorCode.IO_EXCEPTION, e.getMessage());
+        }
     }
 
     public static String getS3DownloadURL(S3Presigner presigner, String bucketName, String keyName) {
@@ -93,9 +98,8 @@ public class ImageUploadService {
             System.out.println("Presigned URL: " + url);
             return url;
         } catch (S3Exception e) {
-            e.getStackTrace();
+            throw new CustomException(ErrorCode.EXCEPTION, e.getMessage());
         }
-        return null;
     }
 
     public static AwsBasicCredentials createCredentials() {

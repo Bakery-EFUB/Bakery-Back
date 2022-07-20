@@ -1,8 +1,11 @@
 package bakery.caker.service;
 
+import bakery.caker.config.Authority;
 import bakery.caker.domain.Member;
 import bakery.caker.dto.OAuthAttributesDTO;
 import bakery.caker.dto.SessionUserDTO;
+import bakery.caker.exception.CustomException;
+import bakery.caker.exception.ErrorCode;
 import bakery.caker.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,19 +28,25 @@ public class OAuthUserService implements OAuth2UserService<OAuth2UserRequest, OA
     private final HttpSession httpSession;
 
     @Override
-    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
-        OAuth2User oAuth2User = delegate.loadUser(userRequest);
+    public OAuth2User loadUser(OAuth2UserRequest userRequest) {
+        try{
+            OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
+            OAuth2User oAuth2User = delegate.loadUser(userRequest);
 
-        OAuthAttributesDTO attributes = OAuthAttributesDTO.ofKakao(oAuth2User.getAttributes());
+            OAuthAttributesDTO attributes = OAuthAttributesDTO.ofKakao(oAuth2User.getAttributes());
+
 
         SessionUserDTO sessionUser = saveOrUpdate(attributes);
-
+        String key = sessionUser.getAuthority().getValue();
         httpSession.setAttribute("user",sessionUser);
 
-        return new DefaultOAuth2User(
-                Collections.singleton(new SimpleGrantedAuthority("USER")),
-                attributes.getAttributes(), "id");
+            return new DefaultOAuth2User(
+                    Collections.singleton(new SimpleGrantedAuthority(key)),
+                    attributes.getAttributes(), "id");
+
+        }catch(OAuth2AuthenticationException e) {
+            throw new CustomException(ErrorCode.EXCEPTION, e.getStackTrace().toString());
+        }
     }
 
     private SessionUserDTO saveOrUpdate(OAuthAttributesDTO attributes){

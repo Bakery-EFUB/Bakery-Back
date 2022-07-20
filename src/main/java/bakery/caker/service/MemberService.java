@@ -5,6 +5,8 @@ import bakery.caker.domain.Member;
 import bakery.caker.dto.MemberRequestDTO;
 import bakery.caker.dto.MemberResponseDTO;
 import bakery.caker.dto.SessionUserDTO;
+import bakery.caker.exception.CustomException;
+import bakery.caker.exception.ErrorCode;
 import bakery.caker.repository.MemberRepository;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSCredentialsProvider;
@@ -37,35 +39,42 @@ public class MemberService {
     @Transactional
     public MemberProfileResponseDTO findSessionMember(Long memberId) {
         Member member = findMemberEntity(memberId);
-        String imageUrl = findProfileImage(memberId);
+        String imageUrl;
+        if(member.getImage().contains("k.kakaocdn.net")) {
+            imageUrl = member.getImage();
+        }
+        else {
+            imageUrl = findProfileImage(memberId);
+        }
         return new MemberProfileResponseDTO(member, imageUrl);
     }
 
     @Transactional
     public MemberResponseDTO findMember(Long memberId) {
         Member member = findMemberEntity(memberId);
-        String imageUrl = findProfileImage(memberId);
+        String imageUrl;
+        if(member.getImage().contains("k.kakaocdn.net")) {
+            imageUrl = member.getImage();
+        }
+        else {
+            imageUrl = findProfileImage(memberId);
+        }
         return new MemberResponseDTO(member, imageUrl);
     }
 
     @Transactional
-    public MemberResponseDTO modifySessionMember(Long memberId, String nickname, MultipartFile file) throws IOException {
+    public MemberResponseDTO modifySessionMember(Long memberId, String nickname, MultipartFile file) {
         Member member = findMemberEntity(memberId);
 
-        if(file!=null) {
-            modifyMemberImage(memberId, file);
-        }
-
-        if(nickname!=null) {
-            member.updateProfile(nickname);
-        }
+        if(file!=null) modifyMemberImage(memberId, file);
+        if(nickname!=null) member.updateProfile(nickname);
 
         String imageUrl = findProfileImage(memberId);
         return new MemberResponseDTO(member, imageUrl);
     }
 
     @Transactional
-    public void modifyMemberImage(Long memberId, MultipartFile file) throws IOException {
+    public void modifyMemberImage(Long memberId, MultipartFile file) {
         Member member = findMemberEntity(memberId);
 
         S3Presigner presigner = ImageUploadService.createPresigner();
@@ -93,13 +102,9 @@ public class MemberService {
 
     @Transactional
     public String deleteSessionMember(Long memberId) {
-        try {
-            Member member = findMemberEntity(memberId);
-            member.updateDeleteFlag();
-            return "삭제완료";
-        }catch(Exception e) {
-            return "실패";
-        }
+        Member member = findMemberEntity(memberId);
+        member.updateDeleteFlag();
+        return "삭제 완료";
     }
 
     @Transactional
@@ -111,7 +116,7 @@ public class MemberService {
 
     public Member findMemberEntity(Long memberId) {
         return memberRepository.findMemberByMemberIdAndDeleteFlagIsFalse(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("유저가 존재하지 않습니다 id= "+memberId));
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND, null));
     }
 
     public String makeFileName(MultipartFile file) {

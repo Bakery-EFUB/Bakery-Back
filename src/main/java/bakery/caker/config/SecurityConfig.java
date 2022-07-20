@@ -21,7 +21,10 @@ public class SecurityConfig {
                 .headers().frameOptions().disable()
                 .and()
                 .authorizeRequests()
-                .anyRequest().permitAll() //일단은 모두 허용
+                .antMatchers("/main").permitAll()
+                .antMatchers("/orders").hasRole(Authority.CLIENT.name())
+                .antMatchers("/stores/myStore").hasAnyRole(Authority.BAKER.name(), Authority.TRAINEE.name())
+                .anyRequest().authenticated() //일단은 모두 허용
                 .and()
                 .logout()
                 .logoutSuccessUrl("/main")

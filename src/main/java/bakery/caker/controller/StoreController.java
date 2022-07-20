@@ -48,6 +48,7 @@ public class StoreController {
 
     @GetMapping("/stores/myStore")
     ResponseEntity<?> MyStoreDetail(@LoginUser SessionUserDTO sessionUser) {
+        System.out.println();
         return new ResponseEntity<>(storeService.getStoreDetailByOwner(sessionUser.getMemberId()), HttpStatus.OK);
     }
 

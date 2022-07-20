@@ -1,5 +1,6 @@
 package bakery.caker.controller;
 
+import bakery.caker.config.Authority;
 import bakery.caker.config.LoginUser;
 import bakery.caker.dto.MemberRequestDTO;
 import bakery.caker.dto.MemberResponseDTO;
@@ -7,9 +8,11 @@ import bakery.caker.dto.SessionUserDTO;
 import bakery.caker.service.MemberService;
 import bakery.caker.service.OAuthUserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.websocket.server.PathParam;
 import java.io.IOException;
 import java.net.URL;
@@ -42,17 +45,18 @@ public class MemberController {
     @PatchMapping("/account/profile")
     public MemberResponseDTO memberModify(@LoginUser SessionUserDTO sessionUser,
                                           @RequestParam(value="nickname", required = false) String nickname,
-                                          @RequestParam(value="image", required = false)MultipartFile file) throws IOException {
+                                          @RequestParam(value="image", required = false)MultipartFile file) {
         return memberService.modifySessionMember(sessionUser.getMemberId(), nickname, file);
     }
 
-    @PatchMapping("/signup/baker")
-    public SessionUserDTO roleModify(@LoginUser SessionUserDTO sessionUser) {
-        if(sessionUser.getFirstLogin()) {
-            return memberService.modifyRole(sessionUser.getMemberId());
+    @GetMapping("/signup/baker")
+    public void roleModify(@LoginUser SessionUserDTO sessionUser, HttpServletResponse httpServletResponse) throws IOException {
+        if(sessionUser.getAuthority()== Authority.CLIENT) {
+            memberService.modifyRole(sessionUser.getMemberId());
+            httpServletResponse.sendRedirect("http://localhost:8080/oauth2/authorization/kakao");
         }
         else {
-            throw new IllegalArgumentException("이미 회원가입이 완료된 유저입니다.");
+            throw new IllegalArgumentException("이미 사장님으로 가입된 유저입니다.");
         }
     }
 
