@@ -12,30 +12,28 @@ import java.util.List;
 import org.springframework.ui.Model;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequiredArgsConstructor
 public class EventController {
-    private EventService eventService;
-
-    public EventController(EventService eventService) {
-        this.eventService = eventService;
-    }
+    private final EventService eventService;
 
     @GetMapping("/store/{storeId}/events")
-    ResponseEntity<?> getEventList(@PathVariable("storeId") Long storeId) {
+    ResponseEntity<?> EventList(@PathVariable("storeId") Long storeId) {
 
         return new ResponseEntity<>(eventService.getEventList(storeId), HttpStatus.OK);
     }
 
     @PostMapping("/events")
-    ResponseEntity<?> write(@LoginUser SessionUserDTO sessionUser, @RequestBody EventRequestDTO eventrequestDTO) {
+    ResponseEntity<?> EventUpdate(@LoginUser SessionUserDTO sessionUser, @RequestBody EventRequestDTO eventrequestDTO) {
 //        return new ResponseEntity<>(sessionUser.getMemberId(), HttpStatus.OK);
 //        eventService.saveEvent(sessionUser.getMemberId(), eventrequestDTO);
         return new ResponseEntity<>(eventService.saveEvent(sessionUser.getMemberId(), eventrequestDTO), HttpStatus.OK);
     }
 
     @DeleteMapping("/store/{storeId}/events/{events_id}")
-    ResponseEntity<?> deleteEvent(@PathVariable("storeId") Long storeId,
+    ResponseEntity<?> EventRemove(@PathVariable("storeId") Long storeId,
                              @PathVariable("events_id") Long events_id,
                              @LoginUser SessionUserDTO sessionUser) {
         eventService.deleteEvent(storeId,storeId,sessionUser.getMemberId());
