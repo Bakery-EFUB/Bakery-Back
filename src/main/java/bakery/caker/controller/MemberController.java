@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
 
+import static bakery.caker.dto.MemberResponseDTO.*;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/members")
@@ -28,7 +30,7 @@ public class MemberController {
     }
 
     @GetMapping("/account/profile")
-    public MemberResponseDTO sessionMemberDetails(@LoginUser SessionUserDTO sessionUser) {
+    public MemberProfileResponseDTO sessionMemberDetails(@LoginUser SessionUserDTO sessionUser) {
         return memberService.findSessionMember(sessionUser.getMemberId());
     }
 
@@ -42,6 +44,16 @@ public class MemberController {
                                           @RequestParam(value="nickname", required = false) String nickname,
                                           @RequestParam(value="image", required = false)MultipartFile file) {
         return memberService.modifySessionMember(sessionUser.getMemberId(), nickname, file);
+    }
+
+    @PatchMapping("/signup/baker")
+    public SessionUserDTO roleModify(@LoginUser SessionUserDTO sessionUser) {
+        if(sessionUser.getFirstLogin()) {
+            return memberService.modifyRole(sessionUser.getMemberId());
+        }
+        else {
+            throw new IllegalArgumentException("이미 회원가입이 완료된 유저입니다.");
+        }
     }
 
     @DeleteMapping("/account")
