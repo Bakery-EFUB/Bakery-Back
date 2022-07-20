@@ -3,9 +3,13 @@ package bakery.caker.service;
 import bakery.caker.domain.Member;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
@@ -94,7 +98,16 @@ public class ImageUploadService {
         return null;
     }
 
+    public static AwsBasicCredentials createCredentials() {
+        return AwsBasicCredentials.create("AKIAZHXBQJ4ZC3LJCSVM","Eaf43V6npbQP7FsFyuOOJPmZK8otCEyY9FmPP8au");
+    }
 
+    public static S3Presigner createPresigner() {
+        return S3Presigner.builder()
+                .region(Region.AP_NORTHEAST_2)
+                .credentialsProvider(StaticCredentialsProvider.create(createCredentials()))
+                .build();
+    }
 
     public static String checkContentType(String fileName) {
         int extension = fileName.indexOf(".");

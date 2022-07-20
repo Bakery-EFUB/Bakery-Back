@@ -11,10 +11,12 @@ import java.io.Serializable;
 public class SessionUserDTO implements Serializable {
     private Long memberId;
     private Authority authority;
+    private Boolean firstLogin;
 
     @Builder
-    public SessionUserDTO(Member member) {
+    public SessionUserDTO(Member member, Boolean firstLogin) {
         this.memberId = member.getMemberId();
         this.authority = member.getAuthority();
+        this.firstLogin = firstLogin;
     }
 }

@@ -31,30 +31,31 @@ public class OAuthUserService implements OAuth2UserService<OAuth2UserRequest, OA
 
         OAuthAttributesDTO attributes = OAuthAttributesDTO.ofKakao(oAuth2User.getAttributes());
 
-        Member member = saveOrUpdate(attributes);
+        SessionUserDTO sessionUser = saveOrUpdate(attributes);
 
-        httpSession.setAttribute("user",new SessionUserDTO(member));
+        httpSession.setAttribute("user",sessionUser);
 
         return new DefaultOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority("USER")),
                 attributes.getAttributes(), "id");
     }
 
-    private Member saveOrUpdate(OAuthAttributesDTO attributes){
+    private SessionUserDTO saveOrUpdate(OAuthAttributesDTO attributes){
         Member member = memberRepository.findMemberByKakaoId(attributes.getKakaoId());
         if(member!=null){
-            return member;
+            return new SessionUserDTO(member, false);
         } else{
             memberRepository.save(attributes.toEntity());
-            return memberRepository.findMemberByKakaoId(attributes.getKakaoId());
+            Member newMember = memberRepository.findMemberByKakaoId(attributes.getKakaoId());
+            return new SessionUserDTO(newMember, true);
         }
     }
 
     public Object loadUserPostman(Map<String,Object> attribute) {
         OAuthAttributesDTO attributes = OAuthAttributesDTO.ofKakao(attribute);
-        Member member = saveOrUpdate(attributes);
+        SessionUserDTO sessionUser = saveOrUpdate(attributes);
 
-        httpSession.setAttribute("user",new SessionUserDTO(member));
+        httpSession.setAttribute("user",sessionUser);
         return httpSession.getAttribute("user");
     }
 }
