@@ -1,5 +1,6 @@
 package bakery.caker.service;
 
+import bakery.caker.config.Authority;
 import bakery.caker.domain.Member;
 import bakery.caker.dto.OAuthAttributesDTO;
 import bakery.caker.dto.SessionUserDTO;
@@ -36,12 +37,13 @@ public class OAuthUserService implements OAuth2UserService<OAuth2UserRequest, OA
 
 
         SessionUserDTO sessionUser = saveOrUpdate(attributes);
-
+        String key = sessionUser.getAuthority().getValue();
         httpSession.setAttribute("user",sessionUser);
 
             return new DefaultOAuth2User(
-                    Collections.singleton(new SimpleGrantedAuthority("USER")),
+                    Collections.singleton(new SimpleGrantedAuthority(key)),
                     attributes.getAttributes(), "id");
+
         }catch(OAuth2AuthenticationException e) {
             throw new CustomException(ErrorCode.EXCEPTION, e.getStackTrace().toString());
         }
