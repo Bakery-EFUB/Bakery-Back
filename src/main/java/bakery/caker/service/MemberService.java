@@ -39,14 +39,26 @@ public class MemberService {
     @Transactional
     public MemberProfileResponseDTO findSessionMember(Long memberId) {
         Member member = findMemberEntity(memberId);
-        String imageUrl = findProfileImage(memberId);
+        String imageUrl;
+        if(member.getImage().contains("k.kakaocdn.net")) {
+            imageUrl = member.getImage();
+        }
+        else {
+            imageUrl = findProfileImage(memberId);
+        }
         return new MemberProfileResponseDTO(member, imageUrl);
     }
 
     @Transactional
     public MemberResponseDTO findMember(Long memberId) {
         Member member = findMemberEntity(memberId);
-        String imageUrl = findProfileImage(memberId);
+        String imageUrl;
+        if(member.getImage().contains("k.kakaocdn.net")) {
+            imageUrl = member.getImage();
+        }
+        else {
+            imageUrl = findProfileImage(memberId);
+        }
         return new MemberResponseDTO(member, imageUrl);
     }
 

@@ -47,11 +47,7 @@ public class SheetService {
                     if (!file.isEmpty()){
                         fileName = makeFileName(file);
                         URL url = ImageUploadService.getS3UploadURL(presigner, this.bucket, fileName);
-                        try {
-                            ImageUploadService.UploadImage(url, file);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        ImageUploadService.UploadImage(url, file);
                         presigner.close();
                     }
 
