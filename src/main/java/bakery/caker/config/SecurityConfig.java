@@ -23,11 +23,17 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/main").permitAll()
+
                 .antMatchers(HttpMethod.POST, "/orders").hasRole(Authority.CLIENT.name())
-                .antMatchers(HttpMethod.PATCH, "/orders/{order_id}").hasRole(Authority.CLIENT.name())
-                .antMatchers(HttpMethod.DELETE, "/orders/{order_id}").hasRole(Authority.CLIENT.name())
                 .antMatchers("/orders/myOrder").hasRole(Authority.CLIENT.name())
-                .antMatchers("/orders/myPin", "/stores/myStore").hasAnyRole(Authority.BAKER.name(), Authority.TRAINEE.name())
+
+                .antMatchers("/orders/myPin").hasRole(Authority.BAKER.name())
+                .antMatchers("/store/{store_id}/events/**").hasRole(Authority.BAKER.name())
+                .antMatchers("**/events/**").hasRole(Authority.BAKER.name())
+
+                .antMatchers("/stores/myStore").hasAnyRole(Authority.BAKER.name(), Authority.TRAINEE.name())
+                .antMatchers(HttpMethod.POST, "/orders/{order_id}/comments/**").hasAnyRole(Authority.BAKER.name(), Authority.CLIENT.name())
+
                 .anyRequest().authenticated() //일단은 모두 허용
                 .and()
                 .logout()
