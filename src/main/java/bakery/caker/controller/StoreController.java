@@ -29,34 +29,34 @@ public class StoreController {
     private final StoreService storeService;
 
     @GetMapping("/stores")
-    ResponseEntity<?> StoreList() {
+    ResponseEntity<?> storeList() {
         return new ResponseEntity<>(storeService.getStoreList(), HttpStatus.OK);
     }
 
 
     @GetMapping("/stores/recomends")
-    ResponseEntity<?> StoreRecomendList() {
+    ResponseEntity<?> storeRecomendList() {
         return new ResponseEntity<>(storeService.getStoreRecomendList(), HttpStatus.OK);
     }
 
     @GetMapping("/stores/search")
-    ResponseEntity<?> MemberById(@RequestParam(name = "keyword") String q){
+    ResponseEntity<?> memberById(@RequestParam(name = "keyword") String q){
       return new ResponseEntity<>(storeService.selectStoreByQuery(q), HttpStatus.OK);
    }
 
     @GetMapping("/stores/{storeId}")
-    ResponseEntity<?> StoreDetail(@PathVariable("storeId") Long storeId) {
+    ResponseEntity<?> storeDetail(@PathVariable("storeId") Long storeId) {
         return new ResponseEntity<>(storeService.getStoreDetail(storeId), HttpStatus.OK);
     }
 
     @GetMapping("/stores/myStore")
-    ResponseEntity<?> MyStoreDetail(@LoginUser SessionUserDTO sessionUser) {
+    ResponseEntity<?> myStoreDetail(@LoginUser SessionUserDTO sessionUser) {
         System.out.println();
         return new ResponseEntity<>(storeService.getStoreDetailByOwner(sessionUser.getMemberId()), HttpStatus.OK);
     }
 
     @PostMapping("/stores/myStore")
-    ResponseEntity<?> MyStoreUpdate(@LoginUser SessionUserDTO sessionUser, @RequestPart StoreResponseDTO storedata, @RequestPart MultipartFile mainImg, @RequestPart List<MultipartFile> menuImg) throws IOException {
+    ResponseEntity<?> myStoreUpdate(@LoginUser SessionUserDTO sessionUser, @RequestPart StoreResponseDTO storedata, @RequestPart MultipartFile mainImg, @RequestPart List<MultipartFile> menuImg) throws IOException {
         StoreResponseDTO storeResponseDTO = storeService.getStoreDetailByOwner(sessionUser.getMemberId());
         if(storeResponseDTO != null && sessionUser.getAuthority().equals(Authority.TRAINEE)) {
             throw new CustomException(ErrorCode.ACCESS_DENIED, null);
