@@ -1,9 +1,12 @@
 package bakery.caker.controller;
 
+import bakery.caker.config.Authority;
 import bakery.caker.config.LoginUser;
 import bakery.caker.domain.Member;
 import bakery.caker.dto.SessionUserDTO;
 import bakery.caker.dto.StoreResponseDTO;
+import bakery.caker.exception.CustomException;
+import bakery.caker.exception.ErrorCode;
 import bakery.caker.repository.MemberRepository;
 import bakery.caker.service.StoreService;
 import lombok.RequiredArgsConstructor;
@@ -54,6 +57,12 @@ public class StoreController {
 
     @PostMapping("/stores/myStore")
     ResponseEntity<?> MyStoreUpdate(@LoginUser SessionUserDTO sessionUser, @RequestPart StoreResponseDTO storedata, @RequestPart MultipartFile mainImg, @RequestPart List<MultipartFile> menuImg) throws IOException {
-        return new ResponseEntity<>(storeService.saveStore(sessionUser.getMemberId(), storedata, mainImg, menuImg), HttpStatus.OK);
+        StoreResponseDTO storeResponseDTO = storeService.getStoreDetailByOwner(sessionUser.getMemberId());
+        if(storeResponseDTO != null && sessionUser.getAuthority().equals(Authority.TRAINEE)) {
+            throw new CustomException(ErrorCode.ACCESS_DENIED, null);
+        }
+        else {
+            return new ResponseEntity<>(storeService.saveStore(sessionUser.getMemberId(), storedata, mainImg, menuImg), HttpStatus.OK);
+        }
     }
 }
