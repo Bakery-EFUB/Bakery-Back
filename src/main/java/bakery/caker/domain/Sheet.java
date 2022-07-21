@@ -1,5 +1,6 @@
 package bakery.caker.domain;
 
+import com.sun.istack.NotNull;
 import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -13,18 +14,27 @@ public class Sheet extends BaseTimeEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long sheetId;
 
+    @NotNull
     private String locationGu;
+    @NotNull
     private String locationDong;
+    @NotNull
     private String type;
+    @NotNull
     private String size;
+    @NotNull
     private String flavor;
 
     @Column(columnDefinition= "TEXT")
+    @NotNull
     private String description;
 
     private String image;
+    @NotNull
     private LocalDateTime pickupDate;
+    @NotNull
     private Integer priceMin;
+    @NotNull
     private Integer priceMax;
     private String hashtag;
     private Boolean finishedFlag;
