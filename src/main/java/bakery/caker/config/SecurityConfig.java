@@ -22,7 +22,7 @@ public class SecurityConfig {
                 .headers().frameOptions().disable()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/main").permitAll()
+                .antMatchers("/", "/main", "/members/postman").permitAll()
 
                 .antMatchers(HttpMethod.POST, "/orders").hasRole(Authority.CLIENT.name())
                 .antMatchers("/orders/myOrder").hasRole(Authority.CLIENT.name())
