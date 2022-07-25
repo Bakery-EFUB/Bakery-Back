@@ -35,7 +35,7 @@ public class SecurityConfig {
                 .antMatchers("/stores/myStore").hasAnyRole(Authority.BAKER.name(), Authority.TRAINEE.name())
                 .antMatchers(HttpMethod.POST, "/orders/{order_id}/comments/**").hasAnyRole(Authority.BAKER.name(), Authority.CLIENT.name())
 
-                .anyRequest().authenticated() //일단은 모두 허용
+                .anyRequest().authenticated()//일단은 모두 허용
                 .and()
                 .logout()
                 .logoutSuccessUrl("/main")

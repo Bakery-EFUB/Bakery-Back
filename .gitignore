@@ -28,6 +28,7 @@ out/
 
 application-aws.properties
 application-oauth.properties
+cors.html
 
 ### NetBeans ###
 /nbproject/private/
