@@ -43,7 +43,6 @@ public class SheetResponseDTO {
         this.priceMin = sheet.getPriceMin();
         this.priceMax = sheet.getPriceMax();
         this.member = sheet.getMember();
-        this.hashtag = sheet.getHashtag();
         this.createdAt = sheet.getCreatedAt();
         this.finishedFlag = sheet.getFinishedFlag();
     }
