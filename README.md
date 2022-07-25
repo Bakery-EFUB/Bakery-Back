@@ -53,11 +53,11 @@
 ## 🍰 프로젝트 구조
 
 ### 설명
-1. main/java/[프로젝트명]/config ▶️ Config
+1. main/java/[프로젝트명]/config ▶️ security 및 cors 설정
 2. main/java/[프로젝트명]/controller ▶ Controller
 3. main/java/[프로젝트명]/domain ▶️ Entity
-4. main/java/[프로젝트명]/dto ▶️ DTO
-5. main/java/[프로젝트명]/exception ▶️ ErrorHandler
+4. main/java/[프로젝트명]/dto ▶️ request와 response dto
+5. main/java/[프로젝트명]/exception ▶️ 커스텀 ErrorHandler
 6. main/java/[프로젝트명]/respository ▶️ Repository
 7. main/java/[프로젝트명]/service ▶️ Service
 8. main/java/[프로젝트명]/Application.java
