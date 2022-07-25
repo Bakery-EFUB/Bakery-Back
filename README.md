@@ -18,7 +18,7 @@
     <tr width="100%">
        <td width="30%" align="center">[로그인] 카카오 로그인, 세션 유지 및 유저별 권한설정 </br> [유저] 유저 추가 및 수정, 유저 탈퇴하기, 유저 프로필 조회 </br> [이미지] s3 presigned url을 사용한 업로드/다운로드 구현 </br> [배포] Github Action 과 CodeDeploy를 이용한 CI/CD 아키텍처 설계 및 구현 </br> [기타] 데이터베이스 설계, 리드미 작성 등.</td>
        <td width="30%" align="center">[유저] 소셜로그인, 프로필수정, 유저 정보 수정, 학교 인증, 유저 탈퇴 </br> [폴더] 폴더 리스트로 반환</br> [DB] 리뷰 DB 구축 등.</td>
-       <td width="30%" align="center">[기능]가게 리스트, 가게 등록, 가게 정보 디테일, 가게 검색 기능 </br>[기능]제안서 수락 및 약속 저장 기능</br>[배포] EC2/loadBalancer/route53/RDS/S3을 이용한 WAS 구축, SSL인증서를 이용한 HTTPS 통신 구현</br> Github Action 과 CodeDeploy를 이용한 CI/CD 아키텍처 설계 및 구현</br> [기타] 데이터베이스 설계, 다이어그램 제작</td>
+       <td width="30%" align="center">[기능]가게 리스트, 가게 등록, 가게 검색 기능  </br>[기능]제안서 수락 및 약속 저장 기능</br>[배포] EC2/loadBalancer/route53/RDS/S3을 이용한 WAS 구축, SSL인증서를 이용한 HTTPS 통신 구현</br> Github Action 과 CodeDeploy를 이용한 CI/CD 아키텍처 설계 및 구현</br> [기타] 데이터베이스 설계, 다이어그램 제작</td>
    </tr>
 </table>
 
