@@ -18,13 +18,11 @@ public class SheetDTO {
     private LocalDateTime pickupDate;
     private Integer priceMin;
     private Integer priceMax;
-    private String hashtag;
 
     @Builder
-    public SheetDTO(String locationGu, String locationDong, String type, String flavor, String size, String description, LocalDateTime pickupDate, Integer priceMin, Integer priceMax, String hashtag){
+    public SheetDTO(String locationGu, String locationDong, String type, String flavor, String size, String description, LocalDateTime pickupDate, Integer priceMin, Integer priceMax){
         this.description = description;
         this.flavor = flavor;
-        this.hashtag = hashtag;
         this.locationDong = locationDong;
         this.locationGu = locationGu;
         this.pickupDate = pickupDate;
@@ -38,7 +36,6 @@ public class SheetDTO {
         return Sheet.builder()
                 .description(description)
                 .flavor(flavor)
-                .hashtag(hashtag)
                 .image(image)
                 .locationDong(locationDong)
                 .locationGu(locationGu)

@@ -11,14 +11,14 @@
         <td width="30%" align="center"><a href= "https://github.com/gimkuku">김현진</a></td>
     </tr>
     <tr width="100%">
-        <td width="30%" align="center"><img src = "https://github.com/MINJU-KIMmm/GitHubTest/blob/main/image/porkProfile/KimSiyeon.jpeg" width="80%"/></td>
-        <td width="30%" align="center"><img src = "https://github.com/MINJU-KIMmm/GitHubTest/blob/main/image/porkProfile/KimSiyeon.jpeg" width="80%"/></td>
+        <td width="30%" align="center"><img src = "https://github.com/Bakery-EFUB/Bakery-Back/blob/develop/siyeonKim.png" width="80%"/></td>
+        <td width="30%" align="center"><img src = "https://user-images.githubusercontent.com/71377968/180743630-5d21fe7a-8042-42bd-aa68-8c50667bd499.png" width="80%"/></td>
         <td width="30%" align="center"><img src = "https://github.com/Bakery-EFUB/Bakery-Back/blob/develop/hjkim.png" width="80%"/></td>
     </tr>
     <tr width="100%">
        <td width="30%" align="center">[로그인] 카카오 로그인, 세션 유지 및 유저별 권한설정 </br> [유저] 유저 추가 및 수정, 유저 탈퇴하기, 유저 프로필 조회 </br> [이미지] s3 presigned url을 사용한 업로드/다운로드 구현 </br> [배포] Github Action 과 CodeDeploy를 이용한 CI/CD 아키텍처 설계 및 구현 </br> [기타] 데이터베이스 설계, 리드미 작성 등.</td>
-       <td width="30%" align="center">[유저] 소셜로그인, 프로필수정, 유저 정보 수정, 학교 인증, 유저 탈퇴 </br> [폴더] 폴더 리스트로 반환</br> [DB] 리뷰 DB 구축 등.</td>
-       <td width="30%" align="center">[기능]가게 등록, 가게 검색 기능 등 </br>[기능]약속 저장 기능 등</br>[배포] EC2/loadBalancer/route53/RDS/S3을 이용한 WAS 구축, SSL인증서를 이용한 HTTPS 통신 구현</br> Github Action 과 CodeDeploy를 이용한 CI/CD 아키텍처 설계 및 구현</br> [기타] 데이터베이스 설계, 다이어그램 제작</td>
+       <td width="30%" align="center">[기능] 제안서 작성, 제안서 일자 수정, 제안서 조회, 제안서 리스트 조회 기능 등 </br> [댓글] 댓글 및 대댓글 작성, 삭제, 조회 기능 등</br> [기타] 데이터베이스 설계, api 문서 작성 등</td>
+       <td width="30%" align="center">[기능]가게 등록, 가게 검색 기능 등 </br>[기능]약속 저장 기능 등</br>[배포] EC2/loadBalancer/route53/RDS/S3을 이용한 WAS 구축, SSL인증서를 이용한 HTTPS 통신 구현</br> Github Action 과 CodeDeploy를 이용한 CI/CD 아키텍처 설계 및 구현</br> [기타] 데이터베이스 설계, 아키텍처 다이어그램 제작</td>
    </tr>
 </table>
 
@@ -34,7 +34,7 @@
 <img src="https://img.shields.io/badge/Amazon AWS-232F3E?style=flat-square&logo=Amazon%20AWS&logoColor=white"/> <img src="https://img.shields.io/badge/Amazon S3-569A31?style=flat-square&logo=AmazonS3&logoColor=white"/> <img src="https://img.shields.io/badge/Amazon EC2-FF9900?style=flat-square&logo=Amazon EC2&logoColor=white"/> <img src="https://img.shields.io/badge/Amazon RDS-527FFF?style=flat-square&logo=Amazon RDS&logoColor=white"/> <img src="https://img.shields.io/badge/Amazon LoadBalancer-E68B49?style=flat-square&logo=Amazon LoadBalancer&logoColor=white"/> <img src="https://img.shields.io/badge/Amazon CodeDeploy-7D9B4B?style=flat-square&logo=Amazon CodeDeploy&logoColor=white"/>
 
 - ETC &nbsp; 
-<img src="https://img.shields.io/badge/Postman-FF6C37?style=flat-square&logo=Postman&logoColor=white"/> <img src="https://img.shields.io/badge/GitHub -181717?style=flat-square&logo=GitHub&logoColor=white"/></br>
+<img src="https://img.shields.io/badge/GitHub -181717?style=flat-square&logo=GitHub&logoColor=white"/> <img src="https://img.shields.io/badge/GitHub Action-256EE0?style=flat-square&logo=GitHub Action&logoColor=white"/></br>
 
 <img src="https://github.com/Bakery-EFUB/Bakery-Back/blob/develop/BakeryArchitectureDiagram.png"/>
 
@@ -53,11 +53,11 @@
 ## 🍰 프로젝트 구조
 
 ### 설명
-1. main/java/[프로젝트명]/config ▶️ Config
+1. main/java/[프로젝트명]/config ▶️ security 및 cors 설정
 2. main/java/[프로젝트명]/controller ▶ Controller
 3. main/java/[프로젝트명]/domain ▶️ Entity
-4. main/java/[프로젝트명]/dto ▶️ DTO
-5. main/java/[프로젝트명]/exception ▶️ ErrorHandler
+4. main/java/[프로젝트명]/dto ▶️ request와 response dto
+5. main/java/[프로젝트명]/exception ▶️ 커스텀 ErrorHandler
 6. main/java/[프로젝트명]/respository ▶️ Repository
 7. main/java/[프로젝트명]/service ▶️ Service
 8. main/java/[프로젝트명]/Application.java
@@ -94,8 +94,8 @@
     │               │   ├── 📑 Recomment.java
     │               │   ├── 📑 Sheet.java
     │               │   └── 📑 Store.java
-    │               ├── 🗂 dto
-    │               ├── 🗂 exception
+    │               ├── 🗂 dto ── 생략
+    │               ├── 🗂 exception
     │               │   ├── 📑 CustomException.java
     │               │   ├── 📑 ErrorCode.java
     │               │   ├── 📑 ErrorResponse.java

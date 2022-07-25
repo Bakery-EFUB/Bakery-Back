@@ -36,7 +36,6 @@ public class Sheet extends BaseTimeEntity{
     private Integer priceMin;
     @NotNull
     private Integer priceMax;
-    private String hashtag;
     private Boolean finishedFlag;
 
     @ManyToOne()
@@ -44,7 +43,7 @@ public class Sheet extends BaseTimeEntity{
     private Member member;
 
     @Builder
-    public Sheet(String locationGu, String locationDong, String type, String size, String flavor, String description, String image, LocalDateTime pickupDate, Integer priceMin, Integer priceMax, String hashtag, Member member){
+    public Sheet(String locationGu, String locationDong, String type, String size, String flavor, String description, String image, LocalDateTime pickupDate, Integer priceMin, Integer priceMax, Member member){
         this.locationGu = locationGu;
         this.locationDong = locationDong;
         this.type = type;
@@ -56,7 +55,6 @@ public class Sheet extends BaseTimeEntity{
         this.priceMin = priceMin;
         this.priceMax = priceMax;
         this.member = member;
-        this.hashtag = hashtag;
         this.finishedFlag = false;
     }
 
