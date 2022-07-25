@@ -1,14 +1,28 @@
 # 특별한 하루메이커, CAKER 
 
-[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FPork-Potatoes%2FPork-Potatoes-Back&count_bg=%23E0755F&title_bg=%239E5D50&icon=&icon_color=%23E0755F&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
+[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FBakery-EFUB%2FBakery-Back&count_bg=%23FF7B72&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
 
 ## 🍏 백엔드 팀원 소개
-| [김시연](https://github.com/siyeonkm)                                                                                             | [김지인](https://github.com/kji-dec)                                                                       | [김현진](https://github.com/gimkuku)                                                                                                                                                                                   |
-|--------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
-| <img src = "https://github.com/MINJU-KIMmm/GitHubTest/blob/main/image/porkProfile/KimSiyeon.jpeg" width="100%"/>                                   | <img src = "https://github.com/MINJU-KIMmm/GitHubTest/blob/main/image/porkProfile/KimSiyeon.jpeg" width="98%"/>         | <img src = "https://github.com/MINJU-KIMmm/GitHubTest/blob/main/image/porkProfile/KimSiyeon.jpeg" width="100%"/>                                                 |
-| [리뷰] 리뷰 검색, 리뷰 포스트</br> [메뉴] 메뉴 열람, 임시 메뉴 저장</br> [폴더] pin 추가 및 삭제</br> [신고] 신고기능</br> [기타] 리드미 작성 등. | [유저] 소셜로그인, 프로필수정, 유저 정보 수정, 학교 인증, 유저 탈퇴 </br> [폴더] 폴더 리스트로 반환</br> [DB] 리뷰 DB 구축 등. | [레스토랑] 리뷰 작성시 맛집 이름 검색, 가게 정보 및 검색 결과 반환</br>[폴더] 폴더에 가게 추가, 폴더 반환, 폴더 수정 및 삭제 기능</br> [서버] 배포 등. |
 
--------------------
+<table border="1" cellspacing="0" cellpadding="0" width="90%">
+    <tr width="100%">
+        <td width="30%" align="center"><a href= "https://github.com/siyeonkm">김시연</a></td>
+        <td width="30%" align="center"><a href= "https://github.com/kji-dec">김지인</a></td>
+        <td width="30%" align="center"><a href= "https://github.com/gimkuku">김현진</a></td>
+    </tr>
+    <tr width="100%">
+        <td width="30%" align="center"><img src = "https://github.com/MINJU-KIMmm/GitHubTest/blob/main/image/porkProfile/KimSiyeon.jpeg" width="80%"/></td>
+        <td width="30%" align="center"><img src = "https://github.com/MINJU-KIMmm/GitHubTest/blob/main/image/porkProfile/KimSiyeon.jpeg" width="80%"/></td>
+        <td width="30%" align="center"><img src = "https://github.com/Bakery-EFUB/Bakery-Back/blob/develop/hjkim.png" width="80%"/></td>
+    </tr>
+    <tr width="100%">
+       <td width="30%" align="center">[로그인] 카카오 로그인, 세션 유지 및 유저별 권한설정 </br> [유저] 유저 추가 및 수정, 유저 탈퇴하기, 유저 프로필 조회 </br> [이미지] s3 presigned url을 사용한 업로드/다운로드 구현 </br> [배포] Github Action 과 CodeDeploy를 이용한 CI/CD 아키텍처 설계 및 구현 </br> [기타] 데이터베이스 설계, 리드미 작성 등.</td>
+       <td width="30%" align="center">[유저] 소셜로그인, 프로필수정, 유저 정보 수정, 학교 인증, 유저 탈퇴 </br> [폴더] 폴더 리스트로 반환</br> [DB] 리뷰 DB 구축 등.</td>
+       <td width="30%" align="center">[기능]가게 리스트, 가게 등록, 가게 정보 디테일, 가게 검색 기능 </br>[기능]제안서 수락 및 약속 저장 기능</br>[배포] EC2/loadBalancer/route53/RDS/S3을 이용한 WAS 구축, SSL인증서를 이용한 HTTPS 통신 구현</br> Github Action 과 CodeDeploy를 이용한 CI/CD 아키텍처 설계 및 구현</br> [기타] 데이터베이스 설계, 다이어그램 제작</td>
+   </tr>
+</table>
+
+
 ## 🍰 개요
 'CAKER'는 레터링 케이크 주문/판매 플랫폼으로, 레터링 케이크를 주문하고자 하는 구매자와 그에 맞는 서비스를 제공하는 판매자를 서로 연결해주어 기존의 불편함을 해소하고 원하는 케이크 가게를 손쉽게 찾게 해줍니다.
 
