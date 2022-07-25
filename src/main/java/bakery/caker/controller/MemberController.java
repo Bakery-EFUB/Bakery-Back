@@ -53,7 +53,7 @@ public class MemberController {
     public void roleModify(@LoginUser SessionUserDTO sessionUser, HttpServletResponse httpServletResponse) throws IOException {
         if(sessionUser.getAuthority()== Authority.CLIENT) {
             memberService.modifyRole(sessionUser.getMemberId());
-            httpServletResponse.sendRedirect("http://localhost:8080/oauth2/authorization/kakao");
+            httpServletResponse.sendRedirect("https://caker.shop/oauth2/authorization/kakao");
         }
         else {
             throw new IllegalArgumentException("이미 사장님으로 가입된 유저입니다.");
