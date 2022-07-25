@@ -22,6 +22,7 @@ public class SecurityConfig {
                 .headers().frameOptions().disable()
                 .and()
                 .authorizeRequests()
+                .mvcMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers("/main").permitAll()
 
                 .antMatchers(HttpMethod.POST, "/orders").hasRole(Authority.CLIENT.name())
