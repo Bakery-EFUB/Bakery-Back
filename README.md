@@ -94,8 +94,8 @@
     │               │   ├── 📑 Recomment.java
     │               │   ├── 📑 Sheet.java
     │               │   └── 📑 Store.java
-    │               ├── 🗂 dto
-    │               ├── 🗂 exception
+    │               ├── 🗂 dto ── 생략
+    │               ├── 🗂 exception
     │               │   ├── 📑 CustomException.java
     │               │   ├── 📑 ErrorCode.java
     │               │   ├── 📑 ErrorResponse.java
