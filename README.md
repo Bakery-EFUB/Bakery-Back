@@ -11,7 +11,7 @@
         <td width="30%" align="center"><a href= "https://github.com/gimkuku">김현진</a></td>
     </tr>
     <tr width="100%">
-        <td width="30%" align="center"><img src = "https://github.com/MINJU-KIMmm/GitHubTest/blob/main/image/porkProfile/KimSiyeon.jpeg" width="80%"/></td>
+        <td width="30%" align="center"><img src = "https://github.com/Bakery-EFUB/Bakery-Back/blob/develop/siyeonKim.png" width="80%"/></td>
         <td width="30%" align="center"><img src = "https://github.com/MINJU-KIMmm/GitHubTest/blob/main/image/porkProfile/KimSiyeon.jpeg" width="80%"/></td>
         <td width="30%" align="center"><img src = "https://github.com/Bakery-EFUB/Bakery-Back/blob/develop/hjkim.png" width="80%"/></td>
     </tr>
