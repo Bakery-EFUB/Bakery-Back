@@ -15,17 +15,18 @@ import lombok.NoArgsConstructor;
 public class EventResponseDTO {
     private String storeName;
     private Store store;
+    private Long eventId;
     private String content;
     private LocalDateTime pickupDate;
     private LocalDateTime pickupTime;
 
     @Builder
-    public EventResponseDTO(String storeName, String content, LocalDateTime pickupDate,
-                            LocalDateTime pickupTime){
-        this.storeName = storeName;
-        this.content = content;
-        this.pickupDate = pickupDate;
-        this.pickupTime = pickupTime;
+    public EventResponseDTO(Event event){
+        this.eventId = event.getId();
+        this.storeName = event.getStore().getName();
+        this.content = event.getContent();
+        this.pickupDate = event.getPickupDate();
+        this.pickupTime = event.getPickupTime();
     }
 
     public Event toEntity() {
