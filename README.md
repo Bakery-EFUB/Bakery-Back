@@ -6,8 +6,9 @@
 
 | [김시연](https://github.com/siyeonkm)                                                                                             | [김지인](https://github.com/kji-dec)                                                                       | [김현진](https://github.com/gimkuku)                    |
 |:--------------------------------------------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------:|
-| <img src = "https://github.com/MINJU-KIMmm/GitHubTest/blob/main/image/porkProfile/KimSiyeon.jpeg" width="90%"/>                    | <img src = "https://github.com/MINJU-KIMmm/GitHubTest/blob/main/image/porkProfile/KimSiyeon.jpeg" width="80%"/>                    | <img src = "https://github.com/MINJU-KIMmm/GitHubTest/blob/main/image/porkProfile/KimSiyeon.jpeg" width="80%"/>                    |
+| <img src = "https://github.com/MINJU-KIMmm/GitHubTest/blob/main/image/porkProfile/KimSiyeon.jpeg" width="90%"/>                    | <img src = "https://github.com/MINJU-KIMmm/GitHubTest/blob/main/image/porkProfile/KimSiyeon.jpeg" width="85%"/>                    | <img src = "https://github.com/MINJU-KIMmm/GitHubTest/blob/main/image/porkProfile/KimSiyeon.jpeg" width="80%"/>                    |
 | [로그인] 카카오 로그인, 세션 유지 및 유저별 권한설정 </br> [유저] 유저 추가 및 수정, 유저 탈퇴하기, 유저 프로필 조회 </br> [이미지] s3 presigned url을 사용한 업로드/다운로드 구현 </br> [배포] Github Action 과 CodeDeploy를 이용한 배포자동화 구조 설계 </br> [기타] 데이터베이스 설계, 리드미 작성 등. | [유저] 소셜로그인, 프로필수정, 유저 정보 수정, 학교 인증, 유저 탈퇴 </br> [폴더] 폴더 리스트로 반환</br> [DB] 리뷰 DB 구축 등. | [레스토랑] 리뷰 작성시 맛집 이름 검색, 가게 정보 및 검색 결과 반환</br>[폴더] 폴더에 가게 추가, 폴더 반환, 폴더 수정 및 삭제 기능</br> [배포] EC2/loadBalancer/route53을 이용한 배포, https 사용, Github Action 과 CodeDeploy를 이용한 배포자동화 구조 설계</br> [기타] 데이터베이스 설계, 다이어그램 제작 |
+|<img width=1000/>|<img width=1300/>|<img width=700/>|
 
 -------------------
 ## 🍰 개요
