@@ -1,7 +1,10 @@
 package bakery.caker.config;
 
 import bakery.caker.dto.SessionUserDTO;
+import bakery.caker.exception.CustomException;
+import bakery.caker.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Session;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -24,7 +27,11 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        return httpSession.getAttribute("user");
+    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+        SessionUserDTO sessionUser = (SessionUserDTO) httpSession.getAttribute("user");
+        if(sessionUser == null) {
+            throw new CustomException(ErrorCode.USER_UNAUTHORIZED, null);
+        }
+        else return sessionUser;
     }
 }
