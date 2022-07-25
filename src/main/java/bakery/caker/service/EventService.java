@@ -34,13 +34,7 @@ public class EventService {
         List<EventResponseDTO> eventResponseDTOList = new ArrayList<>();
 
         for (Event event : EventList) {
-                EventResponseDTO eventResponseDTO = EventResponseDTO.builder()
-                        .storeName(store.get().getName())
-                        .content(event.getContent())
-                        .pickupDate(event.getPickupDate())
-                        .pickupTime(event.getPickupTime())
-                        .build();
-            eventResponseDTOList.add(eventResponseDTO);
+            eventResponseDTOList.add(new EventResponseDTO(event));
         }
         return eventResponseDTOList;
     }
@@ -50,14 +44,10 @@ public class EventService {
         Member owner = memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다 "));
         Store store = storeRepository.findStoreByOwner(owner).orElseThrow(() -> new IllegalArgumentException("해당 스토어가 존재하지 않습니다 "));
         EventResponseDTO eventResponseDTO = EventResponseDTO.builder()
-                .storeName(store.getName())
-                .content(eventRequestDTO.getContent())
-                .pickupDate(eventRequestDTO.getPickupDate())
-                .pickupTime(eventRequestDTO.getPickupTime())
+                .event(eventRequestDTO.toEntity())
                 .build();
         eventResponseDTO.updateStore(store);
         return eventRepository.save(eventResponseDTO.toEntity()).getId();
-//        return memberId;
     }
 
     @Transactional
