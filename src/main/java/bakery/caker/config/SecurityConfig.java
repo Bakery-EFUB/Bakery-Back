@@ -8,6 +8,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
@@ -19,11 +24,11 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http
                 .csrf().disable()
+                .cors().and()
                 .headers().frameOptions().disable()
                 .and()
                 .authorizeRequests()
-                .mvcMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .antMatchers("/main").permitAll()
+                .antMatchers("/**", "/main", "/","/css/**","/images/**","/js/**","/profile").permitAll()
 
                 .antMatchers(HttpMethod.POST, "/orders").hasRole(Authority.CLIENT.name())
                 .antMatchers("/orders/myOrder").hasRole(Authority.CLIENT.name())
@@ -46,5 +51,18 @@ public class SecurityConfig {
                 .userService(oAuthUserService);
 
         return http.build();
+    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000", "http://localhost:63342"));
+        configuration.setAllowedMethods(Arrays.asList("HEAD","POST","GET","DELETE","PUT"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }
