@@ -28,10 +28,6 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        SessionUserDTO sessionUser = (SessionUserDTO) httpSession.getAttribute("user");
-        if(sessionUser == null) {
-            throw new CustomException(ErrorCode.USER_UNAUTHORIZED, null);
-        }
-        else return sessionUser;
+        return null;
     }
 }

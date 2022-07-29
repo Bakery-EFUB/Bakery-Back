@@ -111,7 +111,7 @@ public class MemberService {
     public SessionUserDTO modifyRole(Long memberId) {
         Member member = findMemberEntity(memberId);
         member.updateAuthority(Authority.TRAINEE);
-        return new SessionUserDTO(member, false);
+        return new SessionUserDTO(member);
     }
 
     public Member findMemberEntity(Long memberId) {

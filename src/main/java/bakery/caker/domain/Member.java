@@ -35,9 +35,8 @@ public class Member {
     private String image;
 
     @Column(name = "role")
-    @Enumerated(EnumType.STRING)
     @NotNull
-    private Authority authority;
+    private String authority;
 
     @Column
     @NotNull
@@ -49,12 +48,12 @@ public class Member {
         this.nickname = nickname;
         if(email!=null) this.email = email;
         this.image = image;
-        this.authority = authority;
+        this.authority = authority.getValue();
         this.deleteFlag = false;
     }
 
     public void updateAuthority(Authority authority) {
-        this.authority = authority;
+        this.authority = authority.getValue();
     }
 
     public void updateProfile(String nickname) {

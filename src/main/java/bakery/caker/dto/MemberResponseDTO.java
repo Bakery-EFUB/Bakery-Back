@@ -24,7 +24,7 @@ public class MemberResponseDTO {
         private String nickname;
         private String email;
         private String imageUrl;
-        private Authority role;
+        private String role;
 
         @Builder
         public MemberProfileResponseDTO(Member entity, String imageUrl) {
