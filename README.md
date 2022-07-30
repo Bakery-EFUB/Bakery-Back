@@ -16,7 +16,7 @@
         <td width="30%" align="center"><img src = "https://github.com/Bakery-EFUB/Bakery-Back/blob/develop/hjkim.png" width="80%"/></td>
     </tr>
     <tr width="100%">
-       <td width="30%" align="center">[로그인] 카카오 로그인, 세션 유지 및 유저별 권한설정 </br> [유저] 유저 추가 및 수정, 유저 탈퇴하기, 유저 프로필 조회 </br> [이미지] s3 presigned url을 사용한 업로드/다운로드 구현 </br> [배포] Github Action 과 CodeDeploy를 이용한 CI/CD 아키텍처 설계 및 구현 </br> [기타] 데이터베이스 설계, 리드미 작성 등.</td>
+       <td width="30%" align="center">[로그인] 카카오 로그인, JWT 토큰을 이용한 로그인 유지, 유저별 접근권한 설정 </br> [유저] 유저 추가 및 수정, 유저 탈퇴하기, 유저 프로필 조회 </br> [이미지] s3 presigned url을 사용한 업로드/다운로드 구현 </br> [배포] Github Action 과 CodeDeploy를 이용한 CI/CD 아키텍처 설계 및 구현 </br> [기타] 데이터베이스 설계, 리드미 작성 등.</td>
        <td width="30%" align="center">[기능] 제안서 작성, 제안서 일자 수정, 제안서 조회, 제안서 리스트 조회 기능 등 </br> [댓글] 댓글 및 대댓글 작성, 삭제, 조회 기능 등</br> [기타] 데이터베이스 설계, api 문서 작성 등</td>
        <td width="30%" align="center">[기능]가게 등록, 가게 검색 기능 등 </br>[기능]약속 저장 기능 등</br>[배포] EC2/loadBalancer/route53/RDS/S3을 이용한 WAS 구축, SSL인증서를 이용한 HTTPS 통신 구현</br> Github Action 과 CodeDeploy를 이용한 CI/CD 아키텍처 설계 및 구현</br> [기타] 데이터베이스 설계, 아키텍처 다이어그램 제작</td>
    </tr>
@@ -76,9 +76,8 @@
     │               ├── 📑 Application.java
     │               ├── 🗂 config
     │               │   ├── 📑 Authority.java
-    │               │   ├── 📑 CORSConfigjava
-    │               │   ├── 📑 LoginUser.java
-    │               │   ├── 📑 LoginUserArgumentResolver.java
+    │               │   ├── 📑 OAuth2SuccessHandler.java
+    │               │   ├── 📑 JwtAuthenticationFilter.java
     │               │   ├── 📑 SecurityCOnfig.java
     │               │   └── 📑 WebConfig.java
     │               ├── 🗂 controller
