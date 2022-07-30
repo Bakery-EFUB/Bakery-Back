@@ -19,13 +19,13 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
 public class OAuthUserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
     private final MemberRepository memberRepository;
-    private final HttpSession httpSession;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) {
@@ -35,36 +35,42 @@ public class OAuthUserService implements OAuth2UserService<OAuth2UserRequest, OA
 
             OAuthAttributesDTO attributes = OAuthAttributesDTO.ofKakao(oAuth2User.getAttributes());
 
+            Map<String, Object> newAttribute = updateAttributes(attributes);
+            SessionUserDTO sessionUser = saveOrUpdate(attributes);
+            String key = sessionUser.getAuthority();
 
-        SessionUserDTO sessionUser = saveOrUpdate(attributes);
-        String key = sessionUser.getAuthority().getValue();
-        httpSession.setAttribute("user",sessionUser);
 
             return new DefaultOAuth2User(
                     Collections.singleton(new SimpleGrantedAuthority(key)),
-                    attributes.getAttributes(), "id");
+                    newAttribute, "id");
 
         }catch(OAuth2AuthenticationException e) {
             throw new CustomException(ErrorCode.EXCEPTION, e.getStackTrace().toString());
         }
     }
 
+    private Map<String, Object> updateAttributes(OAuthAttributesDTO attributes) {
+        Member member = memberRepository.findMemberByKakaoId(attributes.getKakaoId());
+        Map<String, Object> newAttribute = new HashMap<String, Object>();
+        newAttribute.putAll(attributes.getAttributes());
+
+        if(member==null) {
+            newAttribute.put("firstLogin", true);
+        }
+        else {
+            newAttribute.put("firstLogin", false);
+        }
+        return newAttribute;
+    }
+
     private SessionUserDTO saveOrUpdate(OAuthAttributesDTO attributes){
         Member member = memberRepository.findMemberByKakaoId(attributes.getKakaoId());
         if(member!=null){
-            return new SessionUserDTO(member, false);
+            return new SessionUserDTO(member);
         } else{
             memberRepository.save(attributes.toEntity());
             Member newMember = memberRepository.findMemberByKakaoId(attributes.getKakaoId());
-            return new SessionUserDTO(newMember, true);
+            return new SessionUserDTO(newMember);
         }
-    }
-
-    public Object loadUserPostman(Map<String,Object> attribute) {
-        OAuthAttributesDTO attributes = OAuthAttributesDTO.ofKakao(attribute);
-        SessionUserDTO sessionUser = saveOrUpdate(attributes);
-
-        httpSession.setAttribute("user",sessionUser);
-        return httpSession.getAttribute("user");
     }
 }

@@ -1,22 +1,18 @@
 package bakery.caker.controller;
 
 import bakery.caker.config.Authority;
-import bakery.caker.config.LoginUser;
-import bakery.caker.dto.MemberRequestDTO;
 import bakery.caker.dto.MemberResponseDTO;
 import bakery.caker.dto.SessionUserDTO;
+import bakery.caker.service.JwtTokenProvider;
 import bakery.caker.service.MemberService;
-import bakery.caker.service.OAuthUserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.websocket.server.PathParam;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.net.URL;
-import java.util.Map;
 
 import static bakery.caker.dto.MemberResponseDTO.*;
 
@@ -25,15 +21,13 @@ import static bakery.caker.dto.MemberResponseDTO.*;
 @RequestMapping("/members")
 public class MemberController {
     private final MemberService memberService;
-    private final OAuthUserService oAuthUserService;
-
-    @PostMapping("/postman")
-    public Object sessionTest(@RequestBody Map<String,Object> attribute) {
-        return oAuthUserService.loadUserPostman(attribute);
-    }
+    private final HttpSession httpSession;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("/account/profile")
-    public MemberProfileResponseDTO sessionMemberDetails(@LoginUser SessionUserDTO sessionUser) {
+    public MemberProfileResponseDTO sessionMemberDetails(HttpServletRequest httpRequest) {
+        SessionUserDTO sessionUser = jwtTokenProvider.getUserInfoByToken(httpRequest);
+
         return memberService.findSessionMember(sessionUser.getMemberId());
     }
 
@@ -43,15 +37,19 @@ public class MemberController {
     }
 
     @PatchMapping("/account/profile")
-    public MemberResponseDTO memberModify(@LoginUser SessionUserDTO sessionUser,
+    public MemberResponseDTO memberModify(HttpServletRequest httpRequest,
                                           @RequestParam(value="nickname", required = false) String nickname,
                                           @RequestParam(value="image", required = false)MultipartFile file) {
+
+        SessionUserDTO sessionUser = jwtTokenProvider.getUserInfoByToken(httpRequest);
         return memberService.modifySessionMember(sessionUser.getMemberId(), nickname, file);
     }
 
     @GetMapping("/signup/baker")
-    public void roleModify(@LoginUser SessionUserDTO sessionUser, HttpServletResponse httpServletResponse) throws IOException {
-        if(sessionUser.getAuthority()== Authority.CLIENT) {
+    public void roleModify(HttpServletRequest httpRequest, HttpServletResponse httpServletResponse) throws IOException {
+        SessionUserDTO sessionUser = jwtTokenProvider.getUserInfoByToken(httpRequest);
+
+        if(sessionUser.getAuthority()== Authority.CLIENT.getValue()) {
             memberService.modifyRole(sessionUser.getMemberId());
             httpServletResponse.sendRedirect("https://caker.shop/oauth2/authorization/kakao");
         }
@@ -61,7 +59,8 @@ public class MemberController {
     }
 
     @DeleteMapping("/account")
-    public String memberDelete(@LoginUser SessionUserDTO sessionUser) {
+    public String memberDelete(HttpServletRequest httpRequest) {
+        SessionUserDTO sessionUser = jwtTokenProvider.getUserInfoByToken(httpRequest);
         return memberService.deleteSessionMember(sessionUser.getMemberId());
     }
 }

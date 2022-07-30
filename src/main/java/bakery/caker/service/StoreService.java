@@ -1,5 +1,7 @@
 package bakery.caker.service;
 
+import bakery.caker.exception.CustomException;
+import bakery.caker.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import javax.transaction.Transactional;
@@ -43,7 +45,7 @@ public class StoreService {
 
     @Transactional
     public Long saveStore(Long memberId, StoreResponseDTO storeResponseDTO, MultipartFile mainImg, List<MultipartFile> menuImg) throws IOException {
-        Member owner = memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다 "));
+        Member owner = memberRepository.findById(memberId).orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND, null));
         S3Presigner presigner = createPresigner();
         String fileName = makeFileName(mainImg);
         URL url = ImageUploadService.getS3UploadURL(presigner, this.bucket, fileName);
@@ -66,13 +68,7 @@ public class StoreService {
 
         for (Store store : StoreList) {
             // 주인장 찾기
-            Long memberId = store.getOwner().getMemberId();
-            Optional<Member> user = memberRepository.findMemberByMemberIdAndDeleteFlagIsFalse(memberId);
-
-            String ownerName = user.get().getNickname();
-            S3Presigner presigner = createPresigner();
-            String imgUrl = findStoreMainImage(presigner,store.getId());
-            StoreResponseDTO storeResponseDTO = new StoreResponseDTO(store, user.get(), ownerName, imgUrl,menuUrl);
+            StoreResponseDTO storeResponseDTO = createStoreResponseDTO(store, menuUrl);
             storeResponseDTOList.add(storeResponseDTO);
 
         }
@@ -88,18 +84,24 @@ public class StoreService {
         if (StoreList.size() < 6){return storeResponseDTOList;}
         for (int i = 0; i<6; i++){
             Store store = StoreList.get(i);
-            // 주인장 찾기
-            Long memberId = store.getOwner().getMemberId();
-            Optional<Member> user = memberRepository.findMemberByMemberIdAndDeleteFlagIsFalse(memberId);
-            if (user.isPresent()) {
-                String ownerName = user.get().getNickname();
-                S3Presigner presigner = createPresigner();
-                String imgUrl = findStoreMainImage(presigner,store.getId());
-                StoreResponseDTO storeResponseDTO = new StoreResponseDTO(store, user.get(), ownerName, imgUrl,menuUrl);
-                storeResponseDTOList.add(storeResponseDTO);
-            }
+            StoreResponseDTO storeResponseDTO = createStoreResponseDTO(store, menuUrl);
+            storeResponseDTOList.add(storeResponseDTO);
         }
         return storeResponseDTOList;
+    }
+
+    public Member findMemberByOwner(Store store) {
+        Long memberId = store.getOwner().getMemberId();
+        Member user = memberRepository.findMemberByMemberIdAndDeleteFlagIsFalse(memberId).orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND, null));
+        return user;
+    }
+
+    public StoreResponseDTO createStoreResponseDTO(Store store, List<String> menuUrl) {
+        Member user = findMemberByOwner(store);
+        String ownerName = user.getNickname();
+        S3Presigner presigner = createPresigner();
+        String imgUrl = findStoreMainImage(presigner,store.getId());
+        return new StoreResponseDTO(store, user, ownerName, imgUrl, menuUrl);
     }
 
     @Transactional
@@ -110,7 +112,7 @@ public class StoreService {
 
     @Transactional
     public StoreResponseDTO getStoreDetail(Long id) {
-        Store store = storeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 스토어가 존재하지 않습니다 id= "+id ));
+        Store store = storeRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND, "스토어 id= "+id ));
         Long memberId = store.getOwner().getMemberId();
         Optional<Member> user = memberRepository.findMemberByMemberIdAndDeleteFlagIsFalse(memberId);
         String ownerName = user.get().getNickname();
@@ -128,8 +130,8 @@ public class StoreService {
 
     @Transactional
     public StoreResponseDTO getStoreDetailByOwner(Long owner_id) {
-        Member owner  = memberRepository.findById(owner_id).orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다 id= "+ owner_id ));
-        Store store = storeRepository.findStoreByOwner(owner).orElseThrow(() -> new IllegalArgumentException("해당 유저의 스토어가 존재하지 않습니다 id= "));
+        Member owner  = memberRepository.findById(owner_id).orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND, null));
+        Store store = storeRepository.findStoreByOwner(owner).orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND, "해당 유저의 스토어가 존재하지 않습니다 id= " + owner_id));
         String ownerName = owner.getNickname();
         S3Presigner presigner = createPresigner();
         String imgUrl = findStoreMainImage(presigner,store.getId());
