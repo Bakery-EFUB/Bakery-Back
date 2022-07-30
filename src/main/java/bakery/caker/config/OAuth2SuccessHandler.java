@@ -44,7 +44,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         String token = jwtTokenProvider.createJwtAccessToken(oAuth2User.getAttribute("id").toString(), role);
         log.info("{}", token);
-        targetUrl = UriComponentsBuilder.fromUriString("/token")
+        targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/kakaologin")
                 .queryParam("token", token)
                 .queryParam("firstLogin", firstLogin)
                 .build().toUriString();
