@@ -41,7 +41,7 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 
                 .authorizeRequests(authorize -> authorize
-                        .mvcMatchers("/oauth2/**", "/token", "/main", "/","/css/**","/images/**","/js/**","/profile").permitAll()
+                        .mvcMatchers("**/oauth2/**", "/kakaologin", "/main", "/","/css/**","/images/**","/js/**","/profile").permitAll()
                         .mvcMatchers("/orders/myPin").hasRole(Authority.BAKER.name())
                         .mvcMatchers(HttpMethod.POST, "/orders").hasRole(Authority.CLIENT.name())
                         .mvcMatchers("/orders/myOrder").hasRole(Authority.CLIENT.name())
