@@ -10,9 +10,4 @@ import java.util.List;
 @RequiredArgsConstructor
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-    private final LoginUserArgumentResolver loginUserArgumentResolver;
-
-    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-        argumentResolvers.add(loginUserArgumentResolver);
-    }
 }
