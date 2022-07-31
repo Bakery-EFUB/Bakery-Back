@@ -1,9 +1,13 @@
 package bakery.caker.service;
 
 import bakery.caker.domain.Comment;
+import bakery.caker.domain.Recomment;
 import bakery.caker.dto.CommentDTO;
 import bakery.caker.dto.CommentResponseDTO;
 import bakery.caker.dto.CommentsResponseDTO;
+import bakery.caker.dto.SessionUserDTO;
+import bakery.caker.exception.CustomException;
+import bakery.caker.exception.ErrorCode;
 import bakery.caker.repository.CommentRepository;
 import bakery.caker.repository.MemberRepository;
 import bakery.caker.repository.SheetRepository;
@@ -77,5 +81,29 @@ public class CommentService {
                 }
         );
         return new CommentsResponseDTO(comments);
+    }
+
+    public void commentWriterCheck(SessionUserDTO sessionUser, Long commentId) {
+        if(sessionUser.getMemberId() != findComment(commentId).getWriter().getMemberId()) {
+            throw new CustomException(ErrorCode.ACCESS_DENIED, "작성자 본인이 아닙니다.");
+        }
+    }
+
+    public void recommentWriterCheck(SessionUserDTO sessionUser, Long recommentId) {
+        if(sessionUser.getMemberId() != findRecomment(recommentId).getWriter().getMemberId()) {
+            throw new CustomException(ErrorCode.ACCESS_DENIED, "작성자 본인이 아닙니다.");
+        }
+    }
+
+    public Comment findComment(Long commentId){
+        Comment comment = commentRepository.findByCommentIdAndDeletedFlagFalse(commentId).orElseThrow(()
+                -> new CustomException(ErrorCode.COMMENT_NOT_FOUND, "삭제되거나 없는 댓글입니다. id= " + commentId));
+        return comment;
+    }
+
+    public Recomment findRecomment(Long recommentId){
+        Recomment recomment = recommentRepository.findByRecommentIdAndDeletedFlagFalse(recommentId).orElseThrow(()
+                -> new CustomException(ErrorCode.COMMENT_NOT_FOUND, "삭제되거나 없는 댓글입니다. id= " + recommentId));
+        return recomment;
     }
 }
