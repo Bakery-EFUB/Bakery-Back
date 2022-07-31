@@ -22,6 +22,8 @@ public class MemberResponseDTO {
     @NoArgsConstructor
     public static class MemberProfileResponseDTO {
         private String nickname;
+        private String name;
+        private String phoneNum;
         private String email;
         private String imageUrl;
         private String role;
@@ -29,6 +31,8 @@ public class MemberResponseDTO {
         @Builder
         public MemberProfileResponseDTO(Member entity, String imageUrl) {
             this.nickname = entity.getNickname();
+            this.name = entity.getName();
+            this.phoneNum = entity.getPhoneNum();
             this.email = entity.getEmail();
             this.imageUrl = imageUrl;
             this.role = entity.getAuthority();

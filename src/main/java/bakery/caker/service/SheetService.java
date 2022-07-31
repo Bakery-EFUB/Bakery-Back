@@ -3,9 +3,12 @@ package bakery.caker.service;
 import bakery.caker.domain.Comment;
 import bakery.caker.domain.Sheet;
 import bakery.caker.domain.Recomment;
+import bakery.caker.dto.SessionUserDTO;
 import bakery.caker.dto.SheetDTO;
 import bakery.caker.dto.SheetResponseDTO;
 import bakery.caker.dto.SheetsResponseDTO;
+import bakery.caker.exception.CustomException;
+import bakery.caker.exception.ErrorCode;
 import bakery.caker.repository.CommentRepository;
 import bakery.caker.repository.MemberRepository;
 import bakery.caker.repository.SheetRepository;
@@ -198,5 +201,11 @@ public class SheetService {
                 }
         );
         return url.get();
+    }
+
+    public void orderWriterCheck(SessionUserDTO sessionUser, Long orderId) {
+        if(sessionUser.getMemberId() != findOrder(orderId).getMember().getMemberId()) {
+            throw new CustomException(ErrorCode.ACCESS_DENIED, "작성자 본인이 아닙니다.");
+        }
     }
 }

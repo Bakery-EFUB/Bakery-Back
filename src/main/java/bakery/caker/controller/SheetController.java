@@ -3,6 +3,8 @@ package bakery.caker.controller;
 import bakery.caker.dto.CommentDTO;
 import bakery.caker.dto.SheetDTO;
 import bakery.caker.dto.SessionUserDTO;
+import bakery.caker.exception.CustomException;
+import bakery.caker.exception.ErrorCode;
 import bakery.caker.service.CommentService;
 import bakery.caker.service.JwtTokenProvider;
 import bakery.caker.service.SheetService;
@@ -63,16 +65,18 @@ public class SheetController {
     @DeleteMapping("/{order_id}")
     public ResponseEntity<?> orderRemove(HttpServletRequest httpRequest, @PathVariable("order_id") Long orderId){
         SessionUserDTO sessionUser = jwtTokenProvider.getUserInfoByToken(httpRequest);
-        sheetService.removeOrder(sessionUser.getMemberId(), orderId);
+        sheetService.orderWriterCheck(sessionUser, orderId);
 
+        sheetService.removeOrder(sessionUser.getMemberId(), orderId);
         return new ResponseEntity<>("delete success", HttpStatus.OK);
     }
 
     @PatchMapping("/{order_id}")
     public ResponseEntity<?> orderModify(HttpServletRequest httpRequest, @PathVariable("order_id") Long orderId, @RequestBody SheetDTO sheetDTO){
         SessionUserDTO sessionUser = jwtTokenProvider.getUserInfoByToken(httpRequest);
-        sheetService.modifyOrder(sessionUser.getMemberId(), orderId, sheetDTO);
+        sheetService.orderWriterCheck(sessionUser, orderId);
 
+        sheetService.modifyOrder(sessionUser.getMemberId(), orderId, sheetDTO);
         return new ResponseEntity<>("update success", HttpStatus.OK);
     }
 
@@ -97,6 +101,7 @@ public class SheetController {
     @DeleteMapping("/{order_id}/comments/{comment_id}")
     public ResponseEntity<?> commentRemove(HttpServletRequest httpRequest, @PathVariable("comment_id") Long commentId){
         SessionUserDTO sessionUser = jwtTokenProvider.getUserInfoByToken(httpRequest);
+        commentService.commentWriterCheck(sessionUser, commentId);
         commentService.removeComment(sessionUser.getMemberId(), commentId);
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -113,6 +118,7 @@ public class SheetController {
     @DeleteMapping("/{order_id}/comments/{comment_id}/recomments/{recomment_id}")
     public ResponseEntity<?> recommentRemove(HttpServletRequest httpRequest, @PathVariable("recomment_id") Long recommentId){
         SessionUserDTO sessionUser = jwtTokenProvider.getUserInfoByToken(httpRequest);
+        commentService.recommentWriterCheck(sessionUser, recommentId);
         commentService.removeRecomment(sessionUser.getMemberId(), recommentId);
 
         return new ResponseEntity<>(HttpStatus.OK);

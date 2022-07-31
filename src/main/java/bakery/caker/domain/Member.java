@@ -29,6 +29,12 @@ public class Member {
     private String nickname;
 
     @Column
+    private String name;
+
+    @Column
+    private String phoneNum;
+
+    @Column
     private String email;
 
     @Column
@@ -58,6 +64,14 @@ public class Member {
 
     public void updateProfile(String nickname) {
         this.nickname = nickname;
+    }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
+
+    public void updatePhoneNum(String phoneNum) {
+        this.phoneNum = phoneNum;
     }
 
     public void updateImage(String fileurl) {
