@@ -37,12 +37,14 @@ public class MemberController {
     }
 
     @PatchMapping("/account/profile")
-    public MemberResponseDTO memberModify(HttpServletRequest httpRequest,
+    public MemberProfileResponseDTO memberModify(HttpServletRequest httpRequest,
                                           @RequestParam(value="nickname", required = false) String nickname,
+                                          @RequestParam(value="name", required = false) String name,
+                                          @RequestParam(value="phoneNum", required = false) String phoneNum,
                                           @RequestParam(value="image", required = false)MultipartFile file) {
 
         SessionUserDTO sessionUser = jwtTokenProvider.getUserInfoByToken(httpRequest);
-        return memberService.modifySessionMember(sessionUser.getMemberId(), nickname, file);
+        return memberService.modifySessionMember(sessionUser.getMemberId(), nickname, name, phoneNum, file);
     }
 
     @GetMapping("/signup/baker")
