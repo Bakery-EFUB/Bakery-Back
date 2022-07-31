@@ -44,7 +44,7 @@ public class CommentService {
             if (memberId.equals(comment.getWriter().getMemberId())) {
                 comment.updateDeletedFlag();
                 commentRepository.save(comment);
-                List<Recomment> recomments = recommentRepository.findAllByComment(comment);
+                List<Recomment> recomments = recommentRepository.findAllByCommentAndDeletedFlagFalse(comment);
                 recomments.forEach(Recomment::updateDeletedFlag);
             }
         });
@@ -78,7 +78,7 @@ public class CommentService {
                 order -> {
                     List<Comment> commentList = commentRepository.findAllBySheetAndDeletedFlagFalse(order);
                     for(Comment comment : commentList){
-                        comments.add(new CommentResponseDTO(comment, recommentRepository.findAllByComment(comment)));
+                        comments.add(new CommentResponseDTO(comment, recommentRepository.findAllByCommentAndDeletedFlagFalse(comment)));
                     }
                 }
         );
