@@ -63,14 +63,16 @@ public class MemberService {
     }
 
     @Transactional
-    public MemberResponseDTO modifySessionMember(Long memberId, String nickname, MultipartFile file) {
+    public MemberProfileResponseDTO modifySessionMember(Long memberId, String nickname, String name, String phoneNum, MultipartFile file) {
         Member member = findMemberEntity(memberId);
 
         if(file!=null) modifyMemberImage(memberId, file);
         if(nickname!=null) member.updateProfile(nickname);
+        if(name!=null) member.updateName(name);
+        if(phoneNum!=null) member.updatePhoneNum(phoneNum);
 
         String imageUrl = findProfileImage(memberId);
-        return new MemberResponseDTO(member, imageUrl);
+        return new MemberProfileResponseDTO(member, imageUrl);
     }
 
     @Transactional
