@@ -38,10 +38,10 @@ public class MemberController {
 
     @PatchMapping("/account/profile")
     public MemberProfileResponseDTO memberModify(HttpServletRequest httpRequest,
-                                          @RequestParam(value="nickname", required = false) String nickname,
-                                          @RequestParam(value="name", required = false) String name,
-                                          @RequestParam(value="phoneNum", required = false) String phoneNum,
-                                          @RequestParam(value="image", required = false)MultipartFile file) {
+                                          @RequestPart(value="nickname", required = false) String nickname,
+                                          @RequestPart(value="name", required = false) String name,
+                                          @RequestPart(value="phoneNum", required = false) String phoneNum,
+                                          @RequestPart(value="image", required = false)MultipartFile file) {
 
         SessionUserDTO sessionUser = jwtTokenProvider.getUserInfoByToken(httpRequest);
         return memberService.modifySessionMember(sessionUser.getMemberId(), nickname, name, phoneNum, file);
