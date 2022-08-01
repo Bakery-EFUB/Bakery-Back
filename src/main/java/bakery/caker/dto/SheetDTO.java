@@ -6,11 +6,11 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 public class SheetDTO {
-    private String locationGu;
-    private String locationDong;
+    private List<String> locationGu;
     private String type;
     private String flavor;
     private String size;
@@ -20,10 +20,9 @@ public class SheetDTO {
     private Integer priceMax;
 
     @Builder
-    public SheetDTO(String locationGu, String locationDong, String type, String flavor, String size, String description, LocalDateTime pickupDate, Integer priceMin, Integer priceMax){
+    public SheetDTO(List<String> locationGu, String type, String flavor, String size, String description, LocalDateTime pickupDate, Integer priceMin, Integer priceMax){
         this.description = description;
         this.flavor = flavor;
-        this.locationDong = locationDong;
         this.locationGu = locationGu;
         this.pickupDate = pickupDate;
         this.priceMax = priceMax;
@@ -32,12 +31,11 @@ public class SheetDTO {
         this.type = type;
     }
 
-    public Sheet toEntity(Member member, String image){
+    public Sheet toEntity(Member member, String locationGu, String image){
         return Sheet.builder()
                 .description(description)
                 .flavor(flavor)
                 .image(image)
-                .locationDong(locationDong)
                 .locationGu(locationGu)
                 .member(member)
                 .pickupDate(pickupDate)
