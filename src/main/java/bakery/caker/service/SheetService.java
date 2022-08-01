@@ -95,8 +95,8 @@ public class SheetService {
     }
 
     //처리되지 않은 location 별 order 읽어오기
-    public SheetsResponseDTO findLocOrders(String locationGu, String locationDong){
-        List<Sheet> sheets = sheetRepository.findAllByLocationGuAndLocationDongAndFinishedFlag(locationGu, locationDong, false);
+    public SheetsResponseDTO findLocOrders(String locationGu){
+        List<Sheet> sheets = sheetRepository.findAllByLocationGuContainsAndFinishedFlag(locationGu, false);
         List<SheetResponseDTO> sheetResponse = returnSheetResponse(sheets);
 
         return SheetsResponseDTO.builder()
