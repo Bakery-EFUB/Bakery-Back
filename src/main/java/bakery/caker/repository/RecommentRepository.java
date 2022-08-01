@@ -12,6 +12,6 @@ import java.util.Optional;
 @Repository
 public interface RecommentRepository extends JpaRepository<Recomment, Long> {
     List<Recomment> findAllByWriter(Member writer);
-    List<Recomment> findAllByComment(Comment comment);
+    List<Recomment> findAllByCommentAndDeletedFlagFalse(Comment comment);
     Optional<Recomment> findByRecommentIdAndDeletedFlagFalse(Long commentId);
 }
