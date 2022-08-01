@@ -63,31 +63,36 @@ public class MemberService {
     }
 
     @Transactional
-    public MemberProfileResponseDTO modifySessionMember(Long memberId, String nickname, String name, String phoneNum, MultipartFile file) {
+    public MemberProfileResponseDTO modifySessionMember(Long memberId, MemberRequestDTO requestDTO) {
         Member member = findMemberEntity(memberId);
 
-        if(file!=null) modifyMemberImage(memberId, file);
-        if(nickname!=null) member.updateProfile(nickname);
-        if(name!=null) member.updateName(name);
-        if(phoneNum!=null) member.updatePhoneNum(phoneNum);
-
-        String imageUrl = findProfileImage(memberId);
-        return new MemberProfileResponseDTO(member, imageUrl);
+        if(requestDTO.getNickname()!=null) member.updateProfile(requestDTO.getNickname());
+        if(requestDTO.getName()!=null) member.updateName(requestDTO.getName());
+        if(requestDTO.getPhoneNum()!=null) member.updatePhoneNum(requestDTO.getPhoneNum());
+        return new MemberProfileResponseDTO(member, findProfileImage(member.getMemberId()));
     }
 
     @Transactional
-    public void modifyMemberImage(Long memberId, MultipartFile file) {
-        Member member = findMemberEntity(memberId);
+    public MemberProfileResponseDTO modifySessionMemberImage(Long memberId, MultipartFile file) {
+        try {
+            Member member = findMemberEntity(memberId);
 
-        S3Presigner presigner = ImageUploadService.createPresigner();
-        String fileName = makeFileName(file);
+            S3Presigner presigner = ImageUploadService.createPresigner();
+            String fileName = makeFileName(file);
 
-        URL url = ImageUploadService.getS3UploadURL(presigner, this.bucket, fileName);
+            URL url = ImageUploadService.getS3UploadURL(presigner, this.bucket, fileName);
 
-        ImageUploadService.UploadImage(url, file);
-        presigner.close();
+            ImageUploadService.UploadImage(url, file);
+            presigner.close();
 
-        member.updateImage(fileName);
+            member.updateImage(fileName);
+            memberRepository.save(member);
+
+            String imageUrl = findProfileImage(memberId);
+            return new MemberProfileResponseDTO(member, imageUrl);
+        }catch (Exception e) {
+            throw new CustomException(ErrorCode.EXCEPTION, e.getMessage());
+        }
     }
 
     @Transactional
