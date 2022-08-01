@@ -23,7 +23,6 @@ public class EventResponseDTO {
     @Builder
     public EventResponseDTO(Event event){
         this.eventId = event.getId();
-        this.storeName = event.getStore().getName();
         this.content = event.getContent();
         this.pickupDate = event.getPickupDate();
         this.pickupTime = event.getPickupTime();
