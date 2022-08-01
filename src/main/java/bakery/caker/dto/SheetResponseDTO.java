@@ -12,8 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 public class SheetResponseDTO {
     private Long sheetId;
-    private String locationGu;
-    private String locationDong;
+    private List<String> locationGu;
     private String type;
     private String size;
     private String flavor;
@@ -24,15 +23,13 @@ public class SheetResponseDTO {
     private Integer priceMin;
     private Integer priceMax;
     private LocalDateTime createdAt;
-    private String hashtag;
     private Boolean finishedFlag;
     private Member member;
 
     @Builder
-    public SheetResponseDTO(Sheet sheet, String imageUrl){
+    public SheetResponseDTO(Sheet sheet, List<String> locationGu, String imageUrl){
         this.sheetId = sheet.getSheetId();
-        this.locationGu = sheet.getLocationGu();
-        this.locationDong = sheet.getLocationDong();
+        this.locationGu = locationGu;
         this.type = sheet.getType();
         this.size = sheet.getSize();
         this.flavor = sheet.getFlavor();

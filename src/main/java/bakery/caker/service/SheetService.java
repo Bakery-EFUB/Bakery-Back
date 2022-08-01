@@ -21,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
 import javax.transaction.Transactional;
-import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -53,8 +52,11 @@ public class SheetService {
                         ImageUploadService.UploadImage(url, file);
                         presigner.close();
                     }
-
-                    sheetRepository.save(order.toEntity(member, fileName));
+                    StringBuilder locGu = new StringBuilder();
+                    for(String gu : order.getLocationGu()){
+                        locGu.append(gu).append(",");
+                    }
+                    sheetRepository.save(order.toEntity(member, locGu.toString(), fileName));
                 });
     }
 
@@ -93,8 +95,8 @@ public class SheetService {
     }
 
     //처리되지 않은 location 별 order 읽어오기
-    public SheetsResponseDTO findLocOrders(String locationGu, String locationDong){
-        List<Sheet> sheets = sheetRepository.findAllByLocationGuAndLocationDongAndFinishedFlag(locationGu, locationDong, false);
+    public SheetsResponseDTO findLocOrders(String locationGu){
+        List<Sheet> sheets = sheetRepository.findAllByLocationGuContainsAndFinishedFlag(locationGu, false);
         List<SheetResponseDTO> sheetResponse = returnSheetResponse(sheets);
 
         return SheetsResponseDTO.builder()
@@ -106,7 +108,10 @@ public class SheetService {
     public SheetResponseDTO findOrder(Long orderId){
         AtomicReference<SheetResponseDTO> sheet = new AtomicReference<>();
         sheetRepository.findById(orderId).ifPresent(
-                order -> sheet.set(new SheetResponseDTO(order, findImage(order.getSheetId()))));
+                order -> {
+                    List<String> locGu = Arrays.asList(order.getLocationGu().split(","));
+                    sheet.set(new SheetResponseDTO(order, locGu, findImage(order.getSheetId())));
+                });
         return sheet.get();
     }
 
@@ -168,7 +173,8 @@ public class SheetService {
         List<SheetResponseDTO> sheetResponse = new ArrayList<>();
 
         for(Sheet sheet:sheets){
-            sheetResponse.add(new SheetResponseDTO(sheet, findImage(sheet.getSheetId())));
+            List<String> locGu = Arrays.asList(sheet.getLocationGu().split(","));
+            sheetResponse.add(new SheetResponseDTO(sheet, locGu, findImage(sheet.getSheetId())));
         }
 
         return sheetResponse;
@@ -204,7 +210,7 @@ public class SheetService {
     }
 
     public void orderWriterCheck(SessionUserDTO sessionUser, Long orderId) {
-        if(sessionUser.getMemberId() != findOrder(orderId).getMember().getMemberId()) {
+        if(!sessionUser.getMemberId().equals(findOrder(orderId).getMember().getMemberId())) {
             throw new CustomException(ErrorCode.ACCESS_DENIED, "작성자 본인이 아닙니다.");
         }
     }

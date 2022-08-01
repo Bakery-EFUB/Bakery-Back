@@ -17,8 +17,6 @@ public class Sheet extends BaseTimeEntity{
     @NotNull
     private String locationGu;
     @NotNull
-    private String locationDong;
-    @NotNull
     private String type;
     @NotNull
     private String size;
@@ -43,9 +41,8 @@ public class Sheet extends BaseTimeEntity{
     private Member member;
 
     @Builder
-    public Sheet(String locationGu, String locationDong, String type, String size, String flavor, String description, String image, LocalDateTime pickupDate, Integer priceMin, Integer priceMax, Member member){
+    public Sheet(String locationGu, String type, String size, String flavor, String description, String image, LocalDateTime pickupDate, Integer priceMin, Integer priceMax, Member member){
         this.locationGu = locationGu;
-        this.locationDong = locationDong;
         this.type = type;
         this.size = size;
         this.flavor = flavor;
