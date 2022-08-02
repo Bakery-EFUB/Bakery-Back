@@ -48,11 +48,14 @@ public class SecurityConfig {
                         .requestMatchers(request -> CorsUtils.isPreFlightRequest(request)).permitAll() //preflight 처리
                         .mvcMatchers(HttpMethod.OPTIONS, "/**/*").permitAll() //preflight 처리
                         .mvcMatchers("**/oauth2/**", "/kakaologin", "/main", "/","/css/**","/images/**","/js/**","/profile").permitAll()
-                        .mvcMatchers("/orders/myPin").hasRole(Authority.BAKER.name())
+                        .mvcMatchers(HttpMethod.GET, "/orders", "/orders/{loc_gu}/{loc_dong}", "/orders/{order_id}", "/orders/newOrder").permitAll()
+                        .mvcMatchers(HttpMethod.GET, "/stores", "/stores/recomends", "/stores/search").permitAll()
+                        .mvcMatchers(HttpMethod.GET, "/orders/{order_id}/comments").permitAll()
+
                         .mvcMatchers(HttpMethod.POST, "/orders").hasRole(Authority.CLIENT.name())
+                        .mvcMatchers(HttpMethod.PATCH, "/orders").hasRole(Authority.CLIENT.name())
                         .mvcMatchers("/orders/myOrder").hasRole(Authority.CLIENT.name())
                         .mvcMatchers("/orders/myPin").hasRole(Authority.BAKER.name())
-                        .mvcMatchers("/store/{store_id}/events/**").hasRole(Authority.BAKER.name())
                         .mvcMatchers("**/events/**").hasRole(Authority.BAKER.name())
                         .mvcMatchers("/stores/myStore").hasAnyRole(Authority.BAKER.name(), Authority.TRAINEE.name())
                         .mvcMatchers(HttpMethod.POST, "/orders/{order_id}/comments/**").hasAnyRole(Authority.BAKER.name(), Authority.CLIENT.name())
@@ -74,7 +77,7 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000", "http://localhost:63342"));
+        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000", "https://bakery-front-j4r1jvyhh-bakeryshop.vercel.app"));
         configuration.setAllowedMethods(Arrays.asList("HEAD","POST","GET","DELETE","PUT"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
 
