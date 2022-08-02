@@ -40,24 +40,28 @@ public class SheetService {
 
     //새로운 order 저장
     @Transactional
-    public void addOrder(Long memberId, SheetDTO order, MultipartFile file){
+    public Long addOrder(Long memberId, SheetDTO order){
+        AtomicReference<Long> orderId = new AtomicReference<>(0L);
         memberRepository.findMemberByMemberIdAndDeleteFlagIsFalse(memberId).ifPresent(
-                member -> {
-                    S3Presigner presigner = ImageUploadService.createPresigner();
-                    String fileName = null;
+                member -> orderId.set(sheetRepository.save(order.toEntity(member, null)).getSheetId()));
+        return orderId.get();
+    }
 
-                    if (!file.isEmpty()){
-                        fileName = makeFileName(file);
-                        URL url = ImageUploadService.getS3UploadURL(presigner, this.bucket, fileName);
-                        ImageUploadService.UploadImage(url, file);
-                        presigner.close();
-                    }
-                    StringBuilder locGu = new StringBuilder();
-                    for(String gu : order.getLocationGu()){
-                        locGu.append(gu).append(",");
-                    }
-                    sheetRepository.save(order.toEntity(member, locGu.toString(), fileName));
-                });
+    @Transactional
+    public void modifyImage(Long memberId, Long orderId, MultipartFile file){
+        memberRepository.findMemberByMemberIdAndDeleteFlagIsFalse(memberId).flatMap(member -> sheetRepository.findById(orderId)).ifPresent(sheet -> {
+            S3Presigner presigner = ImageUploadService.createPresigner();
+            String fileName = null;
+
+            if (!file.isEmpty()) {
+                fileName = makeFileName(file);
+                URL url = ImageUploadService.getS3UploadURL(presigner, this.bucket, fileName);
+                ImageUploadService.UploadImage(url, file);
+                presigner.close();
+            }
+            sheet.updateImage(fileName);
+            sheetRepository.save(sheet);
+        });
     }
 
     //order pickupDate 업데이트
@@ -95,8 +99,8 @@ public class SheetService {
     }
 
     //처리되지 않은 location 별 order 읽어오기
-    public SheetsResponseDTO findLocOrders(String locationGu){
-        List<Sheet> sheets = sheetRepository.findAllByLocationGuContainsAndFinishedFlag(locationGu, false);
+    public SheetsResponseDTO findLocOrders(String locationGu, String locationDong){
+        List<Sheet> sheets = sheetRepository.findAllByLocationGuAndLocationDongAndFinishedFlag(locationGu, locationDong, false);
         List<SheetResponseDTO> sheetResponse = returnSheetResponse(sheets);
 
         return SheetsResponseDTO.builder()
@@ -108,10 +112,7 @@ public class SheetService {
     public SheetResponseDTO findOrder(Long orderId){
         AtomicReference<SheetResponseDTO> sheet = new AtomicReference<>();
         sheetRepository.findById(orderId).ifPresent(
-                order -> {
-                    List<String> locGu = Arrays.asList(order.getLocationGu().split(","));
-                    sheet.set(new SheetResponseDTO(order, locGu, findImage(order.getSheetId())));
-                });
+                order -> sheet.set(new SheetResponseDTO(order, findImage(order.getSheetId()))));
         return sheet.get();
     }
 
@@ -173,8 +174,7 @@ public class SheetService {
         List<SheetResponseDTO> sheetResponse = new ArrayList<>();
 
         for(Sheet sheet:sheets){
-            List<String> locGu = Arrays.asList(sheet.getLocationGu().split(","));
-            sheetResponse.add(new SheetResponseDTO(sheet, locGu, findImage(sheet.getSheetId())));
+            sheetResponse.add(new SheetResponseDTO(sheet, findImage(sheet.getSheetId())));
         }
 
         return sheetResponse;

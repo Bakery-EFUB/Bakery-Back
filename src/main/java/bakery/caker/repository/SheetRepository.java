@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface SheetRepository extends JpaRepository<Sheet, Long> {
     List<Sheet> findAllByFinishedFlag(Boolean finishedFlag);
-    List<Sheet> findAllByLocationGuContainsAndFinishedFlag(String locationGu, Boolean finishedFlag);
+    List<Sheet> findAllByLocationGuAndLocationDongAndFinishedFlag(String locationGu, String locationDong, Boolean finishedFlag);
     List<Sheet> findTop6ByFinishedFlagOrderByCreatedAtDesc(Boolean finishedFlag);
     List<Sheet> findAllByMember(Member member);
 }
