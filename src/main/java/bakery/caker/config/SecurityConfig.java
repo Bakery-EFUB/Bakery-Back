@@ -78,7 +78,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000", "https://bakery-front-j4r1jvyhh-bakeryshop.vercel.app"));
-        configuration.setAllowedMethods(Arrays.asList("HEAD","POST","GET","DELETE","PUT"));
+        configuration.setAllowedMethods(Arrays.asList("HEAD","POST","GET","DELETE","PUT", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
