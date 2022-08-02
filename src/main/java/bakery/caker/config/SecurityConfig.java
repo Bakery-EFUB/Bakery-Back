@@ -18,8 +18,9 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.cors.reactive.CorsUtils;
+
 
 import java.util.Arrays;
 
@@ -44,6 +45,7 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 
                 .authorizeRequests(authorize -> authorize
+                        .requestMatchers(request -> CorsUtils.isPreFlightRequest(request)).permitAll() //preflight 처리
                         .mvcMatchers(HttpMethod.OPTIONS, "/**/*").permitAll() //preflight 처리
                         .mvcMatchers("**/oauth2/**", "/kakaologin", "/main", "/","/css/**","/images/**","/js/**","/profile").permitAll()
                         .mvcMatchers("/orders/myPin").hasRole(Authority.BAKER.name())
