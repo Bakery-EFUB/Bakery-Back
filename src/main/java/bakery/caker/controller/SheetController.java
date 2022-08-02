@@ -3,8 +3,6 @@ package bakery.caker.controller;
 import bakery.caker.dto.CommentDTO;
 import bakery.caker.dto.SheetDTO;
 import bakery.caker.dto.SessionUserDTO;
-import bakery.caker.exception.CustomException;
-import bakery.caker.exception.ErrorCode;
 import bakery.caker.service.CommentService;
 import bakery.caker.service.JwtTokenProvider;
 import bakery.caker.service.SheetService;
@@ -31,8 +29,8 @@ public class SheetController {
     }
 
     @GetMapping("/{loc_gu}/{loc_dong}")
-    public ResponseEntity<?> filteredOrderList(@PathVariable("loc_gu") String locGu, @PathVariable("loc_dong") String locDong){
-        return new ResponseEntity<>(sheetService.findLocOrders(locGu, locDong), HttpStatus.OK);
+    public ResponseEntity<?> filteredOrderList(@PathVariable("loc_gu") String locGu){
+        return new ResponseEntity<>(sheetService.findLocOrders(locGu), HttpStatus.OK);
     }
 
     @GetMapping("/{order_id}")

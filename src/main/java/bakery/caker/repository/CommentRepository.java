@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     List<Comment> findAllByWriter(Member writer);
-    List<Comment> findAllBySheet(Sheet sheet);
+    List<Comment> findAllBySheetAndDeletedFlagFalse(Sheet sheet);
     Optional<Comment> findByCommentIdAndDeletedFlagFalse(Long commentId);
     Optional<Comment> findCommentsBySheetAndDeletedFlagFalse(Sheet sheet);
 }

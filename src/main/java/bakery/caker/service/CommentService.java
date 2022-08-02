@@ -44,6 +44,8 @@ public class CommentService {
             if (memberId.equals(comment.getWriter().getMemberId())) {
                 comment.updateDeletedFlag();
                 commentRepository.save(comment);
+                List<Recomment> recomments = recommentRepository.findAllByCommentAndDeletedFlagFalse(comment);
+                recomments.forEach(Recomment::updateDeletedFlag);
             }
         });
     }
@@ -74,9 +76,9 @@ public class CommentService {
         List<CommentResponseDTO> comments = new ArrayList<>();
         sheetRepository.findById(orderId).ifPresent(
                 order -> {
-                    List<Comment> commentList = commentRepository.findAllBySheet(order);
+                    List<Comment> commentList = commentRepository.findAllBySheetAndDeletedFlagFalse(order);
                     for(Comment comment : commentList){
-                        comments.add(new CommentResponseDTO(comment, recommentRepository.findAllByComment(comment)));
+                        comments.add(new CommentResponseDTO(comment, recommentRepository.findAllByCommentAndDeletedFlagFalse(comment)));
                     }
                 }
         );
@@ -84,13 +86,13 @@ public class CommentService {
     }
 
     public void commentWriterCheck(SessionUserDTO sessionUser, Long commentId) {
-        if(sessionUser.getMemberId() != findComment(commentId).getWriter().getMemberId()) {
+        if(!sessionUser.getMemberId().equals(findComment(commentId).getWriter().getMemberId())) {
             throw new CustomException(ErrorCode.ACCESS_DENIED, "작성자 본인이 아닙니다.");
         }
     }
 
     public void recommentWriterCheck(SessionUserDTO sessionUser, Long recommentId) {
-        if(sessionUser.getMemberId() != findRecomment(recommentId).getWriter().getMemberId()) {
+        if(!sessionUser.getMemberId().equals(findRecomment(recommentId).getWriter().getMemberId())) {
             throw new CustomException(ErrorCode.ACCESS_DENIED, "작성자 본인이 아닙니다.");
         }
     }
