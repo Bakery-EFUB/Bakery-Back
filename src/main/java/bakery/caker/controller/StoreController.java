@@ -53,10 +53,10 @@ public class StoreController {
 
     @PostMapping("/stores/myStore")
     ResponseEntity<?> myStoreUpdate(HttpServletRequest httpRequest, @RequestPart StoreResponseDTO storedata, @RequestPart MultipartFile mainImg, @RequestPart List<MultipartFile> menuImg) throws IOException {
-        SessionUserDTO sessionUser = jwtTokenProvider.getUserInfoByToken(httpRequest);
-        StoreResponseDTO storeResponseDTO = storeService.getStoreDetailByOwner(sessionUser.getMemberId());
 
-        if(storeResponseDTO != null && sessionUser.getAuthority().equals(Authority.TRAINEE)) {
+        SessionUserDTO sessionUser = jwtTokenProvider.getUserInfoByToken(httpRequest);
+
+        if(sessionUser.getAuthority().equals(Authority.TRAINEE)) {
             throw new CustomException(ErrorCode.ACCESS_DENIED, null);
         }
         else {

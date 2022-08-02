@@ -1,6 +1,7 @@
 package bakery.caker.controller;
 
 import bakery.caker.config.Authority;
+import bakery.caker.dto.MemberRequestDTO;
 import bakery.caker.dto.MemberResponseDTO;
 import bakery.caker.dto.SessionUserDTO;
 import bakery.caker.service.JwtTokenProvider;
@@ -37,14 +38,16 @@ public class MemberController {
     }
 
     @PatchMapping("/account/profile")
-    public MemberProfileResponseDTO memberModify(HttpServletRequest httpRequest,
-                                          @RequestParam(value="nickname", required = false) String nickname,
-                                          @RequestParam(value="name", required = false) String name,
-                                          @RequestParam(value="phoneNum", required = false) String phoneNum,
-                                          @RequestParam(value="image", required = false)MultipartFile file) {
+    public MemberProfileResponseDTO memberModify(HttpServletRequest httpRequest, @RequestBody MemberRequestDTO requestDTO){
+        SessionUserDTO sessionUser = jwtTokenProvider.getUserInfoByToken(httpRequest);
+        return memberService.modifySessionMember(sessionUser.getMemberId(), requestDTO);
+    }
+
+    @PatchMapping("/account/profile/image")
+    public MemberProfileResponseDTO memberModify(HttpServletRequest httpRequest, @RequestPart(value="image")MultipartFile file) {
 
         SessionUserDTO sessionUser = jwtTokenProvider.getUserInfoByToken(httpRequest);
-        return memberService.modifySessionMember(sessionUser.getMemberId(), nickname, name, phoneNum, file);
+        return memberService.modifySessionMemberImage(sessionUser.getMemberId(), file);
     }
 
     @GetMapping("/signup/baker")

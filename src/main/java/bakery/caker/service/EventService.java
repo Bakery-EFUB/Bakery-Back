@@ -11,6 +11,8 @@ import java.util.Optional;
 
 import bakery.caker.domain.Event;
 
+import bakery.caker.exception.CustomException;
+import bakery.caker.exception.ErrorCode;
 import bakery.caker.repository.MemberRepository;
 import bakery.caker.repository.StoreRepository;
 import bakery.caker.repository.EventRepository;
@@ -41,8 +43,9 @@ public class EventService {
 
     @Transactional
     public Long saveEvent(Long memberId, EventRequestDTO eventRequestDTO)  {
-        Member owner = memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다 "));
-        Store store = storeRepository.findStoreByOwner(owner).orElseThrow(() -> new IllegalArgumentException("해당 스토어가 존재하지 않습니다 "));
+        Member owner = memberRepository.findById(memberId).orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND, "id= " + memberId));
+        Store store = storeRepository.findStoreByOwner(owner).orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND, null));
+
         EventResponseDTO eventResponseDTO = EventResponseDTO.builder()
                 .event(eventRequestDTO.toEntity())
                 .build();
