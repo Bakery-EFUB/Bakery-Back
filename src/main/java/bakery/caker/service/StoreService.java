@@ -52,7 +52,7 @@ public class StoreService {
     }
 
     @Transactional
-    public Long updateStore(Long storeId, MultipartFile mainImg, List<MultipartFile> menuImg) throws IOException {
+    public Long updateStore(Long storeId, MultipartFile mainImg, MultipartFile menuImg) throws IOException {
         Store store = storeRepository.findById(storeId).orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND, null));
         S3Presigner presigner = createPresigner();
         String fileName = makeFileName(mainImg);
@@ -62,7 +62,7 @@ public class StoreService {
         store.updateMainImage(fileName);
         storeRepository.save(store);
 
-        if (menuImg.size() != 0){ uploadMenuImg(presigner, menuImg, storeId.toString());}
+        if (!menuImg.isEmpty()){ uploadMenuImg(presigner, menuImg, storeId.toString());}
         presigner.close();
         return store.getId();
     }
@@ -188,16 +188,14 @@ public class StoreService {
     }
 
 
-    public void uploadMenuImg(S3Presigner presigner, List<MultipartFile> menuImg, String storeId) throws IOException {
+    public void uploadMenuImg(S3Presigner presigner, MultipartFile menuImg, String storeId) throws IOException {
         int index = 1;
-        for (MultipartFile element : menuImg) {
-            String fileName = element.getOriginalFilename();
+            String fileName = menuImg.getOriginalFilename();
             int extension = fileName.lastIndexOf(".");
             String contentType = fileName.substring(extension);
             fileName = storeId +"/caker-store-menu-"+ Integer.toString(index)+contentType;
             URL url = ImageUploadService.getS3UploadURL(presigner, this.bucket, fileName);
-            ImageUploadService.UploadImage(url, element);
-            index = index + 1;
-        }
+            ImageUploadService.UploadImage(url, menuImg);
+
     }
 }

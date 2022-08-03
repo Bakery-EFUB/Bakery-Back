@@ -65,7 +65,7 @@ public class StoreController {
     }
 
     @PatchMapping("/stores/myStore/image")
-    ResponseEntity<?> myStoreImageUpdate(HttpServletRequest httpRequest, @RequestParam("storeId") Long storeId, @RequestParam(value="mainImg", required = false) MultipartFile mainImg, @RequestParam(value="menuImg", required = false) List<MultipartFile> menuImg) throws IOException {
+    ResponseEntity<?> myStoreImageUpdate(HttpServletRequest httpRequest, @RequestParam("storeId") Long storeId, @RequestParam(value="mainImg", required = false) MultipartFile mainImg, @RequestParam(value="menuImg", required = false) MultipartFile menuImg) throws IOException {
         SessionUserDTO sessionUser = jwtTokenProvider.getUserInfoByToken(httpRequest);
 
         if(sessionUser.getAuthority().equals(Authority.TRAINEE)) {
