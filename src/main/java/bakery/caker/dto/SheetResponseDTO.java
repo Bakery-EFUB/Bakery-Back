@@ -6,13 +6,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor
 public class SheetResponseDTO {
     private Long sheetId;
-    private List<String> locationGu;
+    private String locationGu;
+    private String locationDong;
     private String type;
     private String size;
     private String flavor;
@@ -27,9 +27,10 @@ public class SheetResponseDTO {
     private Member member;
 
     @Builder
-    public SheetResponseDTO(Sheet sheet, List<String> locationGu, String imageUrl){
+    public SheetResponseDTO(Sheet sheet, String imageUrl){
         this.sheetId = sheet.getSheetId();
-        this.locationGu = locationGu;
+        this.locationGu = sheet.getLocationGu();
+        this.locationDong = sheet.getLocationDong();
         this.type = sheet.getType();
         this.size = sheet.getSize();
         this.flavor = sheet.getFlavor();

@@ -29,8 +29,8 @@ public class SheetController {
     }
 
     @GetMapping("/{loc_gu}/{loc_dong}")
-    public ResponseEntity<?> filteredOrderList(@PathVariable("loc_gu") String locGu){
-        return new ResponseEntity<>(sheetService.findLocOrders(locGu), HttpStatus.OK);
+    public ResponseEntity<?> filteredOrderList(@PathVariable("loc_gu") String locGu, @PathVariable("loc_dong") String locDong){
+        return new ResponseEntity<>(sheetService.findLocOrders(locGu, locDong), HttpStatus.OK);
     }
 
     @GetMapping("/{order_id}")
@@ -52,12 +52,18 @@ public class SheetController {
         return new ResponseEntity<>(sheetService.findMyOrders(sessionUser.getMemberId()), HttpStatus.OK);
     }
 
-    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<?> orderAdd(HttpServletRequest httpRequest, @RequestPart SheetDTO sheetDTO, @RequestPart MultipartFile file){
+    @PostMapping()
+    public ResponseEntity<?> orderAdd(HttpServletRequest httpRequest, @RequestBody SheetDTO sheetDTO){
         SessionUserDTO sessionUser = jwtTokenProvider.getUserInfoByToken(httpRequest);
-        sheetService.addOrder(sessionUser.getMemberId(), sheetDTO, file);
+        return new ResponseEntity<>(sheetService.addOrder(sessionUser.getMemberId(), sheetDTO), HttpStatus.CREATED);
+    }
 
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    @CrossOrigin(origins = "https://bakery-front-j4r1jvyhh-bakeryshop.vercel.app/, http://localhost:3000")
+    @PatchMapping()
+    public ResponseEntity<?> orderImageModify(HttpServletRequest httpRequest, @RequestParam("orderId") Long orderId, @RequestParam(value="file", required = false) MultipartFile file){
+        SessionUserDTO sessionUser = jwtTokenProvider.getUserInfoByToken(httpRequest);
+        sheetService.modifyImage(sessionUser.getMemberId(), orderId, file);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{order_id}")
