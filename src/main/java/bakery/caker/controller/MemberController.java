@@ -4,6 +4,8 @@ import bakery.caker.config.Authority;
 import bakery.caker.dto.MemberRequestDTO;
 import bakery.caker.dto.MemberResponseDTO;
 import bakery.caker.dto.SessionUserDTO;
+import bakery.caker.exception.CustomException;
+import bakery.caker.exception.ErrorCode;
 import bakery.caker.service.JwtTokenProvider;
 import bakery.caker.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -53,13 +55,12 @@ public class MemberController {
     @GetMapping("/signup/baker")
     public void roleModify(HttpServletRequest httpRequest, HttpServletResponse httpServletResponse) throws IOException {
         SessionUserDTO sessionUser = jwtTokenProvider.getUserInfoByToken(httpRequest);
-
-        if(sessionUser.getAuthority()== Authority.CLIENT.getValue()) {
+        if(sessionUser.getAuthority().equals(Authority.CLIENT.getValue())) {
             memberService.modifyRole(sessionUser.getMemberId());
             httpServletResponse.sendRedirect("https://caker.shop/oauth2/authorization/kakao");
         }
         else {
-            throw new IllegalArgumentException("이미 사장님으로 가입된 유저입니다.");
+            throw new CustomException(ErrorCode.ACCESS_DENIED, "이미 사장님으로 가입된 유저입니다.");
         }
     }
 

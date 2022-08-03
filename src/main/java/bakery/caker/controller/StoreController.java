@@ -30,7 +30,7 @@ public class StoreController {
         return new ResponseEntity<>(storeService.getStoreList(), HttpStatus.OK);
     }
 
-    @GetMapping("/stores/recomends")
+    @GetMapping("/stores/recommends")
     ResponseEntity<?> storeRecomendList() {
         return new ResponseEntity<>(storeService.getStoreRecomendList(), HttpStatus.OK);
     }
