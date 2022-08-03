@@ -55,22 +55,17 @@ public class StoreController {
     ResponseEntity<?> myStoreUpdate(HttpServletRequest httpRequest,  @RequestBody StoreResponseDTO storedata) throws IOException {
 
         SessionUserDTO sessionUser = jwtTokenProvider.getUserInfoByToken(httpRequest);
-        return new ResponseEntity<>(storeService.saveStore(sessionUser.getMemberId(), storedata), HttpStatus.OK);
 
-//        if(sessionUser.getAuthority().equals(Authority.TRAINEE)) {
-//            throw new CustomException(ErrorCode.ACCESS_DENIED, null);
-//        }
-//        else {
-//            return new ResponseEntity<>(storeService.saveStore(sessionUser.getMemberId(), storedata), HttpStatus.OK);
-//        }
+        if(sessionUser.getAuthority().equals(Authority.TRAINEE)) {
+            throw new CustomException(ErrorCode.ACCESS_DENIED, null);
+        }
+        else {
+            return new ResponseEntity<>(storeService.saveStore(sessionUser.getMemberId(), storedata), HttpStatus.OK);
+        }
     }
 
     @PatchMapping("/stores/myStore/image")
     ResponseEntity<?> myStoreImageUpdate(HttpServletRequest httpRequest, @RequestParam("storeId") Long storeId, @RequestParam(value="mainImg", required = false) MultipartFile mainImg, @RequestParam(value="menuImg", required = false) List<MultipartFile> menuImg) throws IOException {
-//    ResponseEntity<?> myStoreImageUpdate(HttpServletRequest httpRequest, @RequestParam("storeId") Long storeId, @RequestParam(value="mainImg", required = false) MultipartFile mainImg) throws IOException {
-
-//            return new ResponseEntity<>(storeId, HttpStatus.OK);
-
         SessionUserDTO sessionUser = jwtTokenProvider.getUserInfoByToken(httpRequest);
 
         if(sessionUser.getAuthority().equals(Authority.TRAINEE)) {
