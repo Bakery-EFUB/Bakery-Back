@@ -44,20 +44,27 @@ public class StoreService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public Long saveStore(Long memberId, StoreResponseDTO storeResponseDTO, MultipartFile mainImg, List<MultipartFile> menuImg) throws IOException {
+    public Long saveStore(Long memberId, StoreResponseDTO storeResponseDTO) throws IOException {
         Member owner = memberRepository.findById(memberId).orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND, null));
+        storeResponseDTO.updateUser(owner);
+        Long storeId = storeRepository.save(storeResponseDTO.toEntity()).getId();
+        return storeId;
+    }
+
+    @Transactional
+    public Long updateStore(Long storeId, MultipartFile mainImg, List<MultipartFile> menuImg) throws IOException {
+        Store store = storeRepository.findById(storeId).orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND, null));
         S3Presigner presigner = createPresigner();
         String fileName = makeFileName(mainImg);
         URL url = ImageUploadService.getS3UploadURL(presigner, this.bucket, fileName);
         ImageUploadService.UploadImage(url, mainImg);
 
-        storeResponseDTO.updateMainImg(fileName);
-        storeResponseDTO.updateUser(owner);
-        Long storeId = storeRepository.save(storeResponseDTO.toEntity()).getId();
+        store.updateMainImage(fileName);
+        storeRepository.save(store);
 
         if (menuImg.size() != 0){ uploadMenuImg(presigner, menuImg, storeId.toString());}
         presigner.close();
-        return storeId;
+        return store.getId();
     }
 
     @Transactional
