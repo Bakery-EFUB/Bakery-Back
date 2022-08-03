@@ -26,7 +26,7 @@ public class Store  extends BaseTimeEntity {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String name;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = true)
     private String mainImg;
 
     @Column(columnDefinition = "TEXT", nullable = false)
@@ -64,4 +64,9 @@ public class Store  extends BaseTimeEntity {
         this.phoneNumber = phoneNumber;
 
     }
+
+    public void updateMainImage(String fileurl) {
+        this.mainImg = fileurl;
+    }
+
 }
