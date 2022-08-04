@@ -112,14 +112,10 @@ public class SheetService {
     public SheetResponseDTO findOrder(Long orderId){
         AtomicReference<SheetResponseDTO> sheet = new AtomicReference<>();
         sheetRepository.findById(orderId).ifPresent(
-                order -> {
-                    if(!order.getFinishedFlag()){
-                        sheet.set(new SheetResponseDTO(order, findImage(order.getSheetId())));
-                    }
-                    else{
-                        throw new CustomException(ErrorCode.ORDER_NOT_FOUND, "제안서를 찾을 수 없습니다.");
-                    }
-                });
+                order -> sheet.set(new SheetResponseDTO(order, findImage(order.getSheetId()))));
+        if (sheet.get().getFinishedFlag()){
+            throw new CustomException(ErrorCode.ORDER_NOT_FOUND, "해당 제안서 정보를 찾을 수 없습니다.");
+        }
         return sheet.get();
     }
 
