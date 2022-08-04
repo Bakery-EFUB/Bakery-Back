@@ -172,6 +172,18 @@ public class SheetService {
                 .build();
     }
 
+    //Type으로 order조회
+    public SheetsResponseDTO findOrdersByType(String type){
+
+        List<Sheet> sheetList = sheetRepository.findAllByTypeAndFinishedFlagFalse(type);
+        List<SheetResponseDTO> sheetResponse = returnSheetResponse(sheetList);
+
+
+        return SheetsResponseDTO.builder()
+                .sheetResponseDTOs(sheetResponse)
+                .build();
+    }
+
     //리스트로 orderResponse 돌려주기
     private List<SheetResponseDTO> returnSheetResponse(List<Sheet> sheets){
         List<SheetResponseDTO> sheetResponse = new ArrayList<>();

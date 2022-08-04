@@ -47,7 +47,7 @@ public class SecurityConfig {
                 .authorizeRequests(authorize -> authorize
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll() //preflight 처리
                         .mvcMatchers("**/oauth2/**", "/kakaologin", "/main", "/","/css/**","/images/**","/js/**","/profile").permitAll()
-                        .mvcMatchers(HttpMethod.GET, "/orders", "/orders/{loc_gu}/{loc_dong}", "/orders/{order_id}", "/orders/newOrder").permitAll()
+                        .mvcMatchers(HttpMethod.GET, "/orders", "/orders/{loc_gu}/{loc_dong}", "/orders/{order_id}", "/orders/newOrder", "/orders/type/{type}").permitAll()
                         .mvcMatchers(HttpMethod.GET, "/stores", "/stores/{store_id}", "/stores/recommends", "/stores/search").permitAll()
                         .mvcMatchers(HttpMethod.GET, "/orders/{order_id}/comments").permitAll()
 
