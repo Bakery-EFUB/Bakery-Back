@@ -26,8 +26,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -165,7 +163,7 @@ public class SheetService {
 
         memberRepository.findMemberByMemberIdAndDeleteFlagIsFalse(memberId).ifPresent(
                 member -> {
-                    List<Sheet> sheets = sheetRepository.findAllByMember(member);
+                    List<Sheet> sheets = sheetRepository.findAllByMemberAndFinishedFlagFalse(member);
                     sheetResponse.addAll(returnSheetResponse(sheets));
                 });
 
