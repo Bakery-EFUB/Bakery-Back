@@ -54,12 +54,13 @@ public class EventService {
     }
 
     @Transactional
-    public void deleteEvent(Long storeId, Long eventId, Long ownerId) {
+    public Long deleteEvent(Long storeId, Long eventId, Long ownerId) {
         //세션 유저가 가게 주인일때만 삭제 가능
         Optional<Store> store = storeRepository.findById(storeId);
         if( ownerId.equals(store.get().getOwner().getMemberId())){
             eventRepository.deleteById(eventId);
+            return eventId;
         }
-        else return;
+        else return 0L;
     }
 }
