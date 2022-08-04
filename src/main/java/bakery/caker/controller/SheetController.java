@@ -33,6 +33,11 @@ public class SheetController {
         return new ResponseEntity<>(sheetService.findLocOrders(locGu, locDong), HttpStatus.OK);
     }
 
+    @GetMapping("/type/{type}")
+    public ResponseEntity<?> filteredOrderListByType(@PathVariable("type") String type){
+        return new ResponseEntity<>(sheetService.findOrdersByType(type), HttpStatus.OK);
+    }
+
     @GetMapping("/{order_id}")
     public ResponseEntity<?> orderDetails(@PathVariable("order_id") Long orderId){
         return new ResponseEntity<>(sheetService.findOrder(orderId), HttpStatus.OK);
