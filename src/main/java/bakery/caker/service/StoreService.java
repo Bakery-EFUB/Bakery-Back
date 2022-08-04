@@ -120,8 +120,14 @@ public class StoreService {
     }
 
     @Transactional
-    public List<Store> selectStoreByQuery(String q) {
-        List<Store> storeResponseDTOList = storeRepository.findByNameContaining(q);
+    public List<StoreResponseDTO> selectStoreByQuery(String q) {
+        List<Store> stores = storeRepository.findByNameContaining(q);
+        List<StoreResponseDTO> storeResponseDTOList = new ArrayList<>();
+        for (Store store : stores) {
+            List <String> menuUrl = new ArrayList<>();
+            StoreResponseDTO storeResponseDTO = createStoreResponseDTO(store, menuUrl);
+            storeResponseDTOList.add(storeResponseDTO);
+        }
         return storeResponseDTOList;
     }
 
