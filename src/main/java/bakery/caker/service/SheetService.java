@@ -112,7 +112,14 @@ public class SheetService {
     public SheetResponseDTO findOrder(Long orderId){
         AtomicReference<SheetResponseDTO> sheet = new AtomicReference<>();
         sheetRepository.findById(orderId).ifPresent(
-                order -> sheet.set(new SheetResponseDTO(order, findImage(order.getSheetId()))));
+                order -> {
+                    if(!order.getFinishedFlag()){
+                        sheet.set(new SheetResponseDTO(order, findImage(order.getSheetId())));
+                    }
+                    else{
+                        throw new CustomException(ErrorCode.ORDER_NOT_FOUND, "제안서를 찾을 수 없습니다.");
+                    }
+                });
         return sheet.get();
     }
 
@@ -160,7 +167,7 @@ public class SheetService {
 
         memberRepository.findMemberByMemberIdAndDeleteFlagIsFalse(memberId).ifPresent(
                 member -> {
-                    List<Sheet> sheets = sheetRepository.findAllByMember(member);
+                    List<Sheet> sheets = sheetRepository.findAllByMemberAndFinishedFlagFalse(member);
                     sheetResponse.addAll(returnSheetResponse(sheets));
                 });
 
