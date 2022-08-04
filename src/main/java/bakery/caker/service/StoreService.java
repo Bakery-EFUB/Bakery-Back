@@ -88,11 +88,19 @@ public class StoreService {
         List<Store> StoreList = storeRepository.findStoresByOwner_DeleteFlag(false);
         List<StoreResponseDTO> storeResponseDTOList = new ArrayList<>();
         Collections.shuffle(StoreList);
-        if (StoreList.size() < 6){return storeResponseDTOList;}
-        for (int i = 0; i<6; i++){
-            Store store = StoreList.get(i);
-            StoreResponseDTO storeResponseDTO = createStoreResponseDTO(store, menuUrl);
-            storeResponseDTOList.add(storeResponseDTO);
+        if (StoreList.size() < 6 ){
+            for (int i = 0; i<StoreList.size(); i++){
+                Store store = StoreList.get(i);
+                StoreResponseDTO storeResponseDTO = createStoreResponseDTO(store, menuUrl);
+                storeResponseDTOList.add(storeResponseDTO);
+            }
+        }
+        else {
+            for (int i = 0; i < 6; i++) {
+                Store store = StoreList.get(i);
+                StoreResponseDTO storeResponseDTO = createStoreResponseDTO(store, menuUrl);
+                storeResponseDTOList.add(storeResponseDTO);
+            }
         }
         return storeResponseDTOList;
     }
