@@ -13,4 +13,5 @@ public interface SheetRepository extends JpaRepository<Sheet, Long> {
     List<Sheet> findAllByLocationGuAndLocationDongAndFinishedFlag(String locationGu, String locationDong, Boolean finishedFlag);
     List<Sheet> findTop6ByFinishedFlagOrderByCreatedAtDesc(Boolean finishedFlag);
     List<Sheet> findAllByMemberAndFinishedFlagFalse(Member member);
+    List<Sheet> findAllByTypeAndFinishedFlagFalse(String type);
 }
