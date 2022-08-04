@@ -26,6 +26,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -113,6 +115,9 @@ public class SheetService {
         AtomicReference<SheetResponseDTO> sheet = new AtomicReference<>();
         sheetRepository.findById(orderId).ifPresent(
                 order -> sheet.set(new SheetResponseDTO(order, findImage(order.getSheetId()))));
+        if (sheet.get().getFinishedFlag()){
+            throw new CustomException(ErrorCode.ORDER_NOT_FOUND, "해당 제안서 정보를 찾을 수 없습니다.");
+        }
         return sheet.get();
     }
 

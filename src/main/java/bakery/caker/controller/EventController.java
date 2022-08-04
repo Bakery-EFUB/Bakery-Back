@@ -21,7 +21,7 @@ public class EventController {
     private final StoreService storeService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @GetMapping("/store/{storeId}/events")
+    @GetMapping("/stores/{storeId}/events")
     ResponseEntity<?> eventList(HttpServletRequest httpRequest, @PathVariable("storeId") Long storeId) {
         SessionUserDTO sessionUser = jwtTokenProvider.getUserInfoByToken(httpRequest);
         if(sessionUser.getMemberId() != storeService.getStoreDetail(storeId).getOwner().getMemberId()) {
@@ -36,10 +36,10 @@ public class EventController {
         return new ResponseEntity<>(eventService.saveEvent(sessionUser.getMemberId(), eventrequestDTO), HttpStatus.OK);
     }
 
-    @DeleteMapping("/store/{storeId}/events/{events_id}")
-    ResponseEntity<?> eventRemove(@PathVariable("storeId") Long storeId, @PathVariable("events_id") Long events_id, HttpServletRequest httpRequest) {
+    @DeleteMapping("/stores/{storeId}/events/{eventId}")
+    ResponseEntity<?> eventRemove(@PathVariable("storeId") Long storeId, @PathVariable("eventId") Long eventId, HttpServletRequest httpRequest) {
         SessionUserDTO sessionUser = jwtTokenProvider.getUserInfoByToken(httpRequest);
-        eventService.deleteEvent(storeId,storeId,sessionUser.getMemberId());
+        eventService.deleteEvent(storeId,eventId,sessionUser.getMemberId());
         return new ResponseEntity<>("successfully deleted", HttpStatus.OK);
     }
 }

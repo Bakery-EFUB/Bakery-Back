@@ -30,7 +30,7 @@ public class StoreController {
         return new ResponseEntity<>(storeService.getStoreList(), HttpStatus.OK);
     }
 
-    @GetMapping("/stores/recomends")
+    @GetMapping("/stores/recommends")
     ResponseEntity<?> storeRecomendList() {
         return new ResponseEntity<>(storeService.getStoreRecomendList(), HttpStatus.OK);
     }
@@ -68,7 +68,7 @@ public class StoreController {
 
     @CrossOrigin(origins = "https://bakery-front-j4r1jvyhh-bakeryshop.vercel.app/, http://localhost:3000")
     @PatchMapping("/stores/myStore/image")
-    ResponseEntity<?> myStoreImageUpdate(HttpServletRequest httpRequest, @RequestParam("storeId") Long storeId, @RequestParam(value="mainImg", required = false) MultipartFile mainImg, @RequestParam(value="menuImg", required = false) List<MultipartFile> menuImg) throws IOException {
+    ResponseEntity<?> myStoreImageUpdate(HttpServletRequest httpRequest, @RequestParam("storeId") Long storeId, @RequestParam(value="mainImg", required = false) MultipartFile mainImg, @RequestParam(value="menuImg", required = false) MultipartFile menuImg) throws IOException {
         SessionUserDTO sessionUser = jwtTokenProvider.getUserInfoByToken(httpRequest);
 
         if(sessionUser.getAuthority().equals(Authority.TRAINEE)) {

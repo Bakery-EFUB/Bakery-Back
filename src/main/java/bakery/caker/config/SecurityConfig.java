@@ -45,11 +45,10 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 
                 .authorizeRequests(authorize -> authorize
-                        .requestMatchers(request -> CorsUtils.isPreFlightRequest(request)).permitAll() //preflight 처리
-                        .mvcMatchers(HttpMethod.OPTIONS, "/**/*").permitAll() //preflight 처리
+                        .requestMatchers(CorsUtils::isPreFlightRequest).permitAll() //preflight 처리
                         .mvcMatchers("**/oauth2/**", "/kakaologin", "/main", "/","/css/**","/images/**","/js/**","/profile").permitAll()
                         .mvcMatchers(HttpMethod.GET, "/orders", "/orders/{loc_gu}/{loc_dong}", "/orders/{order_id}", "/orders/newOrder").permitAll()
-                        .mvcMatchers(HttpMethod.GET, "/stores", "/stores/recomends", "/stores/search").permitAll()
+                        .mvcMatchers(HttpMethod.GET, "/stores", "/stores/{store_id}", "/stores/recommends", "/stores/search").permitAll()
                         .mvcMatchers(HttpMethod.GET, "/orders/{order_id}/comments").permitAll()
 
                         .mvcMatchers(HttpMethod.POST, "/orders").hasRole(Authority.CLIENT.name())
