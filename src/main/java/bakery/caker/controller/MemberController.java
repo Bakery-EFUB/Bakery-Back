@@ -57,7 +57,7 @@ public class MemberController {
         SessionUserDTO sessionUser = jwtTokenProvider.getUserInfoByToken(httpRequest);
         if(sessionUser.getAuthority().equals(Authority.CLIENT.getValue())) {
             memberService.modifyRole(sessionUser.getMemberId());
-            httpServletResponse.sendRedirect("https://caker.shop/oauth2/authorization/kakao");
+            httpServletResponse.sendRedirect("https://dev.caker.shop/oauth2/authorization/kakao");
         }
         else {
             throw new CustomException(ErrorCode.ACCESS_DENIED, "이미 사장님으로 가입된 유저입니다.");
