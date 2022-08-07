@@ -63,7 +63,7 @@ public class SheetController {
         return new ResponseEntity<>(sheetService.addOrder(sessionUser.getMemberId(), sheetDTO), HttpStatus.CREATED);
     }
 
-    @CrossOrigin(origins = "https://www.caker.shop/, https://bakery-front-rho.vercel.app/, http://localhost:3000")
+    @CrossOrigin(origins = "https://caker.shop, https://bakery-front-rho.vercel.app/, http://localhost:3000")
     @PatchMapping()
     public ResponseEntity<?> orderImageModify(HttpServletRequest httpRequest, @RequestParam("orderId") Long orderId, @RequestParam(value="file", required = false) MultipartFile file){
         SessionUserDTO sessionUser = jwtTokenProvider.getUserInfoByToken(httpRequest);
