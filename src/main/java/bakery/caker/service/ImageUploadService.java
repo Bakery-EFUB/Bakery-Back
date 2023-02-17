@@ -103,7 +103,7 @@ public class ImageUploadService {
     }
 
     public static AwsBasicCredentials createCredentials() {
-        return AwsBasicCredentials.create("AKIAZHXBQJ4ZC3LJCSVM","Eaf43V6npbQP7FsFyuOOJPmZK8otCEyY9FmPP8au");
+        return AwsBasicCredentials.create("", "");
     }
 
     public static S3Presigner createPresigner() {
