@@ -19,6 +19,8 @@ repositories {
 }
 
 dependencies {
+	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
 	implementation platform("software.amazon.awssdk:bom:2.16.60")
 	implementation 'software.amazon.awssdk:s3'
 	implementation group: 'commons-io', name: 'commons-io', version: '2.9.0'
