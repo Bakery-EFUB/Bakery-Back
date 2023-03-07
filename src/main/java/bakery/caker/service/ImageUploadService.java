@@ -102,14 +102,14 @@ public class ImageUploadService {
         }
     }
 
-    public static AwsBasicCredentials createCredentials() {
-        return AwsBasicCredentials.create("", "");
+    public static AwsBasicCredentials createCredentials(String access, String secret) {
+        return AwsBasicCredentials.create(access, secret);
     }
 
-    public static S3Presigner createPresigner() {
+    public static S3Presigner createPresigner(String access, String secret) {
         return S3Presigner.builder()
                 .region(Region.AP_NORTHEAST_2)
-                .credentialsProvider(StaticCredentialsProvider.create(createCredentials()))
+                .credentialsProvider(StaticCredentialsProvider.create(createCredentials(access, secret)))
                 .build();
     }
 

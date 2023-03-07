@@ -24,7 +24,6 @@ import static bakery.caker.dto.MemberResponseDTO.*;
 @RequestMapping("/members")
 public class MemberController {
     private final MemberService memberService;
-    private final HttpSession httpSession;
     private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("/account/profile")
