@@ -1,6 +1,7 @@
 package bakery.caker.service;
 
 import bakery.caker.config.Authority;
+import bakery.caker.config.S3Properties;
 import bakery.caker.domain.Member;
 import bakery.caker.dto.MemberRequestDTO;
 import bakery.caker.dto.MemberResponseDTO;
@@ -32,9 +33,7 @@ import static bakery.caker.dto.MemberResponseDTO.*;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
-
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
+    private final S3Properties properties;
 
     @Transactional
     public MemberProfileResponseDTO findSessionMember(Long memberId) {
@@ -77,10 +76,10 @@ public class MemberService {
         try {
             Member member = findMemberEntity(memberId);
 
-            S3Presigner presigner = ImageUploadService.createPresigner();
+            S3Presigner presigner = ImageUploadService.createPresigner(properties.getCredentials().getAccessKey(), properties.getCredentials().getSecretKey());
             String fileName = makeFileName(file);
 
-            URL url = ImageUploadService.getS3UploadURL(presigner, this.bucket, fileName);
+            URL url = ImageUploadService.getS3UploadURL(presigner, properties.getS3().getBucket(), fileName);
 
             ImageUploadService.UploadImage(url, file);
             presigner.close();
@@ -100,9 +99,9 @@ public class MemberService {
         Member member = findMemberEntity(memberId);
         String fileName = member.getImage();
 
-        S3Presigner presigner = ImageUploadService.createPresigner();
+        S3Presigner presigner = ImageUploadService.createPresigner(properties.getCredentials().getAccessKey(), properties.getCredentials().getSecretKey());
 
-        String url = ImageUploadService.getS3DownloadURL(presigner, this.bucket, fileName);
+        String url = ImageUploadService.getS3DownloadURL(presigner, properties.getS3().getBucket(), fileName);
         presigner.close();
         return url;
     }

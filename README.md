@@ -36,7 +36,7 @@
 - ETC &nbsp; 
 <img src="https://img.shields.io/badge/GitHub -181717?style=flat-square&logo=GitHub&logoColor=white"/> <img src="https://img.shields.io/badge/GitHub Action-256EE0?style=flat-square&logo=GitHub Action&logoColor=white"/></br>
 
-<img src="https://github.com/Bakery-EFUB/Bakery-Back/blob/develop/BakeryArchitectureDiagram.png"/>
+<img src="https://user-images.githubusercontent.com/99666136/183558301-95416e18-9b6f-455b-a02c-1878840cae5f.png"/>
 
 ## 🍰 라이브러리
 1. lombok

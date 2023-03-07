@@ -1,5 +1,6 @@
 package bakery.caker.service;
 
+import bakery.caker.config.S3Properties;
 import bakery.caker.domain.Comment;
 import bakery.caker.domain.Sheet;
 import bakery.caker.domain.Recomment;
@@ -34,9 +35,9 @@ public class SheetService {
     private final CommentRepository commentRepository;
     private final RecommentRepository recommentRepository;
     private final MemberRepository memberRepository;
+    private final S3Properties properties;
 
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
+
 
     //새로운 order 저장
     @Transactional
@@ -50,12 +51,12 @@ public class SheetService {
     @Transactional
     public void modifyImage(Long memberId, Long orderId, MultipartFile file){
         memberRepository.findMemberByMemberIdAndDeleteFlagIsFalse(memberId).flatMap(member -> sheetRepository.findById(orderId)).ifPresent(sheet -> {
-            S3Presigner presigner = ImageUploadService.createPresigner();
+            S3Presigner presigner = ImageUploadService.createPresigner(properties.getCredentials().getAccessKey(), properties.getCredentials().getSecretKey());
             String fileName = null;
 
             if (!file.isEmpty()) {
                 fileName = makeFileName(file);
-                URL url = ImageUploadService.getS3UploadURL(presigner, this.bucket, fileName);
+                URL url = ImageUploadService.getS3UploadURL(presigner, properties.getS3().getBucket(), fileName);
                 ImageUploadService.UploadImage(url, file);
                 presigner.close();
             }
@@ -214,9 +215,9 @@ public class SheetService {
                 sheet -> {
                     String image = sheet.getImage();
                     if(image != null){
-                        S3Presigner presigner = ImageUploadService.createPresigner();
+                        S3Presigner presigner = ImageUploadService.createPresigner(properties.getCredentials().getAccessKey(), properties.getCredentials().getSecretKey());
 
-                        url.set(ImageUploadService.getS3DownloadURL(presigner, this.bucket, image));
+                        url.set(ImageUploadService.getS3DownloadURL(presigner, properties.getS3().getBucket(), image));
                         presigner.close();
                     }
                 }
