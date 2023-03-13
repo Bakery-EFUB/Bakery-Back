@@ -35,5 +35,4 @@ public class S3Properties {
             this.secretKey = secretKey;
         }
     }
-
 }
